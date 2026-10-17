@@ -372,6 +372,13 @@
                 <p>Choose your role to continue</p>
             </div>
 
+            <!-- 📥 PWA INSTALL BUTTON ADDED HERE -->
+            <div style="text-align: center; margin-bottom: 30px;">
+                <button id="installAppBtn" style="display: none; padding: 12px 30px; background: #10b981; color: white; border: none; border-radius: 30px; font-size: 16px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3); transition: transform 0.3s ease;">
+                    📥 Download & Install App
+                </button>
+            </div>
+
             <div class="cards-container">
                 <!-- Student Card -->
                 <div class="card student-card" onclick="goToStudent()">
@@ -498,13 +505,44 @@
 
         createParticles();
    
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js')
-        .then(registration => console.log('SW registered'))
-        .catch(err => console.log('SW registration failed', err));
-    });
-  }
-</script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => console.log('SW registered'))
+                    .catch(err => console.log('SW registration failed', err));
+            });
+        }
+
+        // ==========================================
+        // 📥 PWA INSTALL LOGIC ADDED HERE
+        // ==========================================
+        let deferredPrompt;
+        const installBtn = document.getElementById('installAppBtn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            if (installBtn) {
+                installBtn.style.display = 'inline-block';
+            }
+        });
+
+        if (installBtn) {
+            installBtn.addEventListener('click', async () => {
+                if (!deferredPrompt) return;
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                deferredPrompt = null;
+                if (outcome === 'accepted') {
+                    installBtn.style.display = 'none';
+                }
+            });
+        }
+
+        window.addEventListener('appinstalled', () => {
+            if (installBtn) installBtn.style.display = 'none';
+            console.log('PWA was installed');
+        });
+    </script>
 </body>
 </html>
