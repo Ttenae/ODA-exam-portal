@@ -1,5 +1,8 @@
 {
   "dependencies": {
     "firebase-admin": "^11.11.1"
+  },
+  "devDependencies": {
+    "@netlify/plugin-sitemap": "^0.8.1"
   }
 }
