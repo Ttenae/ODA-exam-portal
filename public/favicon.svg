@@ -1,4 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <rect width="100" height="100" rx="20" fill="#2a5298" />
-  <text x="50" y="68" font-family="Arial, sans-serif" font-size="42" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="1">ODA</text>
+  <rect width="100" height="100" rx="20" fill="#1e3c72" />
+  <path d="M50 20 L10 40 L50 60 L90 40 Z" fill="#ffffff" />
+  <path d="M25 50 L25 70 C25 75 75 75 75 70 L75 50 L50 62 Z" fill="#e5e7eb" />
+  <path d="M85 45 L85 70" stroke="#ffffff" stroke-width="3" stroke-linecap="round" />
+  <circle cx="85" cy="73" r="4" fill="#f59e0b" />
 </svg>
