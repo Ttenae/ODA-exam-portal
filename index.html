@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Portal - Choose Your Role</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Intro Animation Styles */
+        .intro-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a0a2a, #1a1a4a, #0a0a2a);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 1;
+            transition: opacity 1.5s ease;
+        }
+
+        .intro-overlay.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .intro-content {
+            text-align: center;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .intro-logo {
+            font-size: 100px;
+            margin-bottom: 20px;
+            animation: bounceLogo 1.2s ease infinite alternate;
+        }
+
+        @keyframes bounceLogo {
+            from {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+            to {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+        }
+
+        .intro-title {
+            font-size: 42px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff, #4a7db4, #2a5298);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: fadeIn 0.8s ease forwards 0.3s;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .intro-subtitle {
+            font-size: 16px;
+            color: rgba(255,255,255,0.7);
+            letter-spacing: 2px;
+            margin-bottom: 40px;
+            opacity: 0;
+            animation: fadeIn 0.8s ease forwards 0.6s;
+        }
+
+        .loading-container {
+            width: 300px;
+            height: 4px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 0 auto;
+            opacity: 0;
+            animation: fadeIn 0.8s ease forwards 0.9s;
+        }
+
+        .loading-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #2a5298, #4a7db4, #2a5298);
+            border-radius: 4px;
+            animation: loading 3s ease forwards;
+        }
+
+        @keyframes loading {
+            0% { width: 0%; }
+            20% { width: 20%; }
+            40% { width: 40%; }
+            60% { width: 60%; }
+            80% { width: 80%; }
+            100% { width: 100%; }
+        }
+
+        .progress-text {
+            margin-top: 15px;
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+            font-family: monospace;
+            opacity: 0;
+            animation: fadeIn 0.8s ease forwards 1.2s;
+        }
+
+        .intro-quote {
+            margin-top: 40px;
+            font-size: 14px;
+            color: rgba(255,255,255,0.4);
+            font-style: italic;
+            opacity: 0;
+            animation: fadeIn 0.8s ease forwards 1.5s;
+        }
+
+        /* Floating particles for intro */
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(74, 125, 180, 0.6);
+            border-radius: 50%;
+            animation: particleFloat 15s infinite linear;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Main Content Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .main-wrapper {
+            width: 100%;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 1s ease, visibility 1s ease;
+        }
+
+        .main-wrapper.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+            animation: slideDown 0.8s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .cards-container {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            width: 320px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .card-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
+            color: #1e3c72;
+            margin-bottom: 15px;
+            font-size: 28px;
+        }
+
+        .card p {
+            color: #6b7280;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .card-btn {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .card-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Student Card Specific */
+        .student-card {
+            border-bottom: 5px solid #2a5298;
+        }
+
+        .student-card .card-btn {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+        }
+
+        /* Teacher Card Specific */
+        .teacher-card {
+            border-bottom: 5px solid #dc2626;
+        }
+
+        .teacher-card .card-btn {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 60px;
+            color: rgba(255,255,255,0.7);
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2rem; }
+            .cards-container { gap: 20px; }
+            .card { width: 280px; padding: 30px; }
+            .card-icon { font-size: 60px; }
+            .intro-title { font-size: 28px; }
+            .intro-logo { font-size: 70px; }
+            .loading-container { width: 250px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Intro Animation Overlay -->
+    <div class="intro-overlay" id="introOverlay">
+        <div class="intro-content">
+            <div class="intro-logo">📚</div>
+            <h1 class="intro-title">Student Portal</h1>
+            <p class="intro-subtitle">YOUR ACADEMIC JOURNEY BEGINS HERE</p>
+            <div class="loading-container">
+                <div class="loading-bar"></div>
+            </div>
+            <div class="progress-text" id="progressText">Loading...</div>
+            <div class="intro-quote" id="introQuote">"Education is the most powerful weapon which you can use to change the world."</div>
+        </div>
+    </div>
+
+    <!-- Main Content Wrapper -->
+    <div class="main-wrapper" id="mainWrapper">
+        <div class="container">
+            <div class="header">
+                <h1>📚 Welcome to Student Portal</h1>
+                <p>Choose your role to continue</p>
+            </div>
+
+            <div class="cards-container">
+                <!-- Student Card -->
+                <div class="card student-card" onclick="goToStudent()">
+                    <div class="card-icon">🎓</div>
+                    <h2>Student</h2>
+                    <p>Access your exam results, view grades, and track your academic progress.</p>
+                    <button class="card-btn">Enter as Student →</button>
+                </div>
+
+                <!-- Teacher Card -->
+                <div class="card teacher-card" onclick="goToTeacher()">
+                    <div class="card-icon">👨‍🏫</div>
+                    <h2>Teacher</h2>
+                    <p>Upload exam results, manage student grades, and view class performance.</p>
+                    <button class="card-btn">Enter as Teacher →</button>
+                </div>
+            </div>
+
+            <div class="footer">
+                <p>© 2026 Tesfaye Tilahun | All Rights Reserved</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Quotes array for rotation
+        const quotes = [
+            '"Education is the most powerful weapon which you can use to change the world." - Nelson Mandela',
+            '"The beautiful thing about learning is that no one can take it away from you." - B.B. King',
+            '"Invest in knowledge. It pays the best interest." - Benjamin Franklin',
+            '"The capacity to learn is a gift; the ability to learn is a skill; the willingness to learn is a choice." - Brian Herbert',
+            '"Knowledge is power. Information is liberating. Education is the premise of progress." - Kofi Annan'
+        ];
+
+        let quoteIndex = 0;
+        const quoteElement = document.getElementById('introQuote');
+        const progressText = document.getElementById('progressText');
+        const introOverlay = document.getElementById('introOverlay');
+        const mainWrapper = document.getElementById('mainWrapper');
+
+        // Progress messages
+        const progressMessages = [
+            'Initializing system...',
+            'Loading student records...',
+            'Connecting to database...',
+            'Preparing dashboard...',
+            'Almost there...',
+            'Welcome!'
+        ];
+
+        let msgIndex = 0;
+        const msgInterval = setInterval(() => {
+            msgIndex++;
+            if (msgIndex < progressMessages.length) {
+                progressText.textContent = progressMessages[msgIndex];
+            }
+        }, 500);
+
+        // Rotate quotes every 2.5 seconds
+        const quoteInterval = setInterval(() => {
+            quoteIndex = (quoteIndex + 1) % quotes.length;
+            if (quoteElement) {
+                quoteElement.style.opacity = '0';
+                setTimeout(() => {
+                    quoteElement.textContent = quotes[quoteIndex];
+                    quoteElement.style.opacity = '1';
+                }, 300);
+            }
+        }, 2500);
+
+        // After 4 seconds, fade out intro and show main content
+        setTimeout(() => {
+            clearInterval(msgInterval);
+            clearInterval(quoteInterval);
+            progressText.textContent = 'Welcome!';
+            
+            // Fade out intro
+            introOverlay.classList.add('fade-out');
+            
+            // Show main content
+            mainWrapper.classList.add('visible');
+            
+            // Remove intro overlay after animation
+            setTimeout(() => {
+                introOverlay.style.display = 'none';
+            }, 1500);
+        }, 4000);
+
+        // Navigation functions
+        function goToStudent() {
+            const card = document.querySelector('.student-card');
+            card.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 200);
+        }
+
+        function goToTeacher() {
+            const card = document.querySelector('.teacher-card');
+            card.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                window.location.href = 'teacher.html';
+            }, 200);
+        }
+
+        // Create floating particles for intro
+        function createParticles() {
+            const introContent = document.querySelector('.intro-content');
+            if (!introContent) return;
+
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                particle.style.animationDuration = 8 + Math.random() * 7 + 's';
+                particle.style.width = Math.random() * 6 + 2 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.background = `rgba(74, 125, 180, ${0.2 + Math.random() * 0.5})`;
+                introContent.appendChild(particle);
+            }
+        }
+
+        createParticles();
+    </script>
+</body>
+</html>

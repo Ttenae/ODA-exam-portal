@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>3D Student Portal | Sign Up & Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0a0a2a, #1a1a4a);
+            min-height: 100vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Fixed 3D Background that stays behind content */
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Scrollable content */
+        .content-wrapper {
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        .auth-card {
+            background: rgba(255, 255, 255, 0.97);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 40px 35px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            animation: floatIn 0.8s cubic-bezier(0.34, 1.2, 0.64, 1);
+        }
+
+        @keyframes floatIn {
+            from { opacity: 0; transform: translateY(50px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            font-size: 32px;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
+        }
+
+        .logo p {
+            color: #6b7280;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        .login-type-selector {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            background: #f3f4f6;
+            border-radius: 50px;
+            padding: 5px;
+        }
+
+        .login-type-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: transparent;
+            color: #6b7280;
+        }
+
+        .login-type-btn.active {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .tab-btn {
+            flex: 1;
+            background: none;
+            border: none;
+            padding: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            color: #9ca3af;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            color: #2a5298;
+            border-bottom: 3px solid #2a5298;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+            position: relative;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px 18px;
+            border: 2px solid #e5e7eb;
+            border-radius: 16px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: white;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 4px rgba(42, 82, 152, 0.1);
+        }
+
+        .form-group label {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: white;
+            padding: 0 6px;
+            color: #9ca3af;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            font-size: 15px;
+        }
+
+        .form-group input:focus ~ label,
+        .form-group input:not(:placeholder-shown) ~ label {
+            top: 0;
+            font-size: 11px;
+            color: #2a5298;
+            font-weight: 600;
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 5px;
+        }
+
+        .auth-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(42, 82, 152, 0.4);
+        }
+
+        .auth-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 13px;
+            display: none;
+            font-weight: 500;
+        }
+
+        .error-message {
+            background: #fef2f2;
+            color: #dc2626;
+            border-left: 4px solid #dc2626;
+        }
+
+        .success-message {
+            background: #f0fdf4;
+            color: #16a34a;
+            border-left: 4px solid #16a34a;
+        }
+
+        .info-message {
+            background: #eff6ff;
+            color: #2563eb;
+            border-left: 4px solid #2563eb;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.6s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .dashboard-container {
+            width: 100%;
+            max-width: 550px;
+            margin: 0 auto;
+        }
+
+        .dashboard-card {
+            background: rgba(255, 255, 255, 0.97);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 45px 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            text-align: center;
+        }
+
+        .dashboard-card h2 {
+            color: #1e3c72;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+
+        .info-box {
+            background: #f3f4f6;
+            padding: 15px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .info-box p {
+            color: #4b5563;
+            margin: 10px 0;
+            font-size: 15px;
+        }
+
+        .exam-btn, .logout-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .exam-btn {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+        }
+
+        .exam-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(42, 82, 152, 0.4);
+        }
+
+        .logout-btn {
+            background: #dc2626;
+            color: white;
+        }
+
+        .logout-btn:hover {
+            background: #b91c1c;
+            transform: translateY(-2px);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            overflow-y: auto;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 20px;
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .exam-card {
+            background: #f3f4f6;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .exam-card:hover {
+            transform: translateX(5px);
+            background: #e5e7eb;
+        }
+
+        .question-card {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .question-card.correct {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+        }
+
+        .question-card.incorrect {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+        }
+
+        .back-btn {
+            background: #6b7280;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .back-btn:hover {
+            background: #4b5563;
+        }
+
+        .close-modal {
+            background: #2a5298;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .close-modal:hover {
+            background: #1e3c72;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(0,0,0,0.1);
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .no-results-icon {
+            font-size: 64px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 600px) {
+            .auth-card, .dashboard-card { padding: 30px 25px; }
+            .logo h1 { font-size: 26px; }
+            .modal-content { margin: 20px; padding: 20px; }
+            .content-wrapper { padding: 20px; }
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #2a5298;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #1e3c72;
+        }
+    </style>
+</head>
+<body>
+    <!-- Fixed 3D Background Container -->
+    <div id="canvas-container"></div>
+
+    <!-- Scrollable Content -->
+    <div class="content-wrapper">
+        <!-- Auth Container (Sign Up/Login) -->
+        <div class="auth-container" id="authContainer">
+            <div class="auth-card">
+                <div class="logo">
+                    <h1>📚 Student Portal</h1>
+                    <p>Sign up or login to access your results</p>
+                </div>
+                
+                <div class="login-type-selector">
+                    <button class="login-type-btn active" id="usernameLoginBtn" onclick="switchLoginType('username')">🔑 Username Login</button>
+                    <button class="login-type-btn" id="nameLoginBtn" onclick="switchLoginType('name')">👤 Name Login (Grade 12)</button>
+                </div>
+                
+                <div id="messageBox" class="message"></div>
+                
+                <div class="tab-buttons">
+                    <button class="tab-btn" id="loginTabBtn" onclick="switchTab('login')">Login</button>
+                    <button class="tab-btn active" id="signupTabBtn" onclick="switchTab('signup')">Sign Up</button>
+                </div>
+                
+                <!-- Login Form -->
+                <form id="loginForm" style="display: none;">
+                    <div id="usernameLoginFields">
+                        <div class="form-group">
+                            <input type="text" id="loginUsername" placeholder=" " autocomplete="off">
+                            <label>Username</label>
+                        </div>
+                    </div>
+                    <div id="nameLoginFields" style="display: none;">
+                        <div class="form-group">
+                            <input type="text" id="loginFirstName" placeholder=" " autocomplete="off">
+                            <label>First Name</label>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="loginLastName" placeholder=" " autocomplete="off">
+                            <label>Last Name</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="loginPassword" placeholder=" " autocomplete="off">
+                        <label>Password</label>
+                    </div>
+                    <button type="submit" class="auth-btn" id="loginBtn">Sign In →</button>
+                </form>
+                
+                <!-- Sign Up Form -->
+                <form id="signupForm" style="display: block;">
+                    <div id="signupUsernameFields">
+                        <div class="form-group">
+                            <input type="text" id="signupUsername" placeholder=" " autocomplete="off">
+                            <label>Username (from school records)</label>
+                        </div>
+                    </div>
+                    <div id="signupNameFields" style="display: none;">
+                        <div class="form-group">
+                            <input type="text" id="signupFirstName" placeholder=" " autocomplete="off">
+                            <label>First Name</label>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="signupLastName" placeholder=" " autocomplete="off">
+                            <label>Last Name</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="signupTempPassword" placeholder=" " autocomplete="off">
+                        <label>Temporary Password (from teacher)</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="signupNewPassword" placeholder=" " autocomplete="off">
+                        <label>Create Your New Password</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="signupConfirmPassword" placeholder=" " autocomplete="off">
+                        <label>Confirm New Password</label>
+                    </div>
+                    <button type="submit" class="auth-btn" id="signupBtn">Create Account →</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Dashboard Container -->
+        <div class="dashboard-container" id="dashboardContainer" style="display: none;">
+            <div class="dashboard-card">
+                <h2>Welcome, <span id="studentName">Student</span>! 👋</h2>
+                <div class="info-box">
+                    <p>📋 <strong>Student ID:</strong> <span id="studentId">-</span></p>
+                    <p>📚 <strong>Class:</strong> <span id="studentClass">-</span></p>
+                    <p>👤 <strong>Name:</strong> <span id="studentFullName">-</span></p>
+                </div>
+                <button class="exam-btn" onclick="showResults()">📊 View My Exam Results</button>
+                <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+                <div class="footer">
+                    <p>© 2026 Tesfaye Tilahun | All Rights Reserved</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Modal -->
+    <div id="resultsModal" class="modal">
+        <div class="modal-content">
+            <div id="resultsContent"><div class="loading-spinner"></div> Loading...</div>
+            <button class="close-modal" onclick="closeResults()">Close</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+        import { getFirestore, doc, getDoc, updateDoc, collection, query, where, getDocs } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyC3mzT04soXs1N5yhoCZnY6JHB4CW6RU6E",
+            authDomain: "student-portal-3201c.firebaseapp.com",
+            projectId: "student-portal-3201c",
+            storageBucket: "student-portal-3201c.firebasestorage.app",
+            messagingSenderId: "702013538228",
+            appId: "1:702013538228:web:e8826755e73e4c7fdb3ce1"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        // DOM Elements
+        const authContainer = document.getElementById('authContainer');
+        const dashboardContainer = document.getElementById('dashboardContainer');
+        const loginForm = document.getElementById('loginForm');
+        const signupForm = document.getElementById('signupForm');
+        const loginBtn = document.getElementById('loginBtn');
+        const signupBtn = document.getElementById('signupBtn');
+        const messageBox = document.getElementById('messageBox');
+        
+        let currentUser = null;
+        let currentLoginType = 'username';
+        
+        function showMessage(message, type = 'error') {
+            messageBox.textContent = message;
+            messageBox.className = `message ${type}-message`;
+            messageBox.style.display = 'block';
+            setTimeout(() => {
+                messageBox.style.display = 'none';
+            }, 5000);
+        }
+        
+        function setLoading(isLoading, formType) {
+            if (formType === 'login') {
+                loginBtn.disabled = isLoading;
+                loginBtn.innerHTML = isLoading ? '<span class="loading-spinner"></span> Signing in...' : 'Sign In →';
+            } else {
+                signupBtn.disabled = isLoading;
+                signupBtn.innerHTML = isLoading ? '<span class="loading-spinner"></span> Creating account...' : 'Create Account →';
+            }
+        }
+        
+        window.switchLoginType = function(type) {
+            currentLoginType = type;
+            const usernameBtn = document.getElementById('usernameLoginBtn');
+            const nameBtn = document.getElementById('nameLoginBtn');
+            const usernameLoginFields = document.getElementById('usernameLoginFields');
+            const nameLoginFields = document.getElementById('nameLoginFields');
+            const signupUsernameFields = document.getElementById('signupUsernameFields');
+            const signupNameFields = document.getElementById('signupNameFields');
+            
+            if (type === 'username') {
+                usernameBtn.classList.add('active');
+                nameBtn.classList.remove('active');
+                if (usernameLoginFields) usernameLoginFields.style.display = 'block';
+                if (nameLoginFields) nameLoginFields.style.display = 'none';
+                if (signupUsernameFields) signupUsernameFields.style.display = 'block';
+                if (signupNameFields) signupNameFields.style.display = 'none';
+            } else {
+                usernameBtn.classList.remove('active');
+                nameBtn.classList.add('active');
+                if (usernameLoginFields) usernameLoginFields.style.display = 'none';
+                if (nameLoginFields) nameLoginFields.style.display = 'block';
+                if (signupUsernameFields) signupUsernameFields.style.display = 'none';
+                if (signupNameFields) signupNameFields.style.display = 'block';
+            }
+        };
+        
+        window.switchTab = function(tab) {
+            const loginTabBtn = document.getElementById('loginTabBtn');
+            const signupTabBtn = document.getElementById('signupTabBtn');
+            
+            if (tab === 'login') {
+                loginForm.style.display = 'block';
+                signupForm.style.display = 'none';
+                loginTabBtn.classList.add('active');
+                signupTabBtn.classList.remove('active');
+            } else {
+                loginForm.style.display = 'none';
+                signupForm.style.display = 'block';
+                loginTabBtn.classList.remove('active');
+                signupTabBtn.classList.add('active');
+            }
+            messageBox.style.display = 'none';
+        };
+        
+        async function findStudentByUsername(username) {
+            const studentsQuery = query(collection(db, 'students'), where('username', '==', username));
+            const studentsSnapshot = await getDocs(studentsQuery);
+            if (!studentsSnapshot.empty) {
+                return { studentDoc: studentsSnapshot.docs[0], method: 'students' };
+            }
+            
+            const studentNamesQuery = query(collection(db, 'studentNames'), where('username', '==', username));
+            const studentNamesSnapshot = await getDocs(studentNamesQuery);
+            if (!studentNamesSnapshot.empty) {
+                const docData = studentNamesSnapshot.docs[0].data();
+                return { 
+                    studentDoc: {
+                        id: studentNamesSnapshot.docs[0].id,
+                        data: () => docData,
+                        exists: true
+                    }, 
+                    method: 'studentNames',
+                    isNameCollection: true
+                };
+            }
+            
+            return null;
+        }
+        
+        async function findStudentByName(firstName, lastName) {
+            const studentsQuery = query(
+                collection(db, 'students'), 
+                where('firstName', '==', firstName),
+                where('lastName', '==', lastName)
+            );
+            const studentsSnapshot = await getDocs(studentsQuery);
+            if (!studentsSnapshot.empty) {
+                return { studentDoc: studentsSnapshot.docs[0], method: 'students' };
+            }
+            
+            const combinedName = `${firstName.toLowerCase()}_${lastName.toLowerCase()}`;
+            const studentNameDoc = await getDoc(doc(db, 'studentNames', combinedName));
+            if (studentNameDoc.exists()) {
+                const docData = studentNameDoc.data();
+                return { 
+                    studentDoc: {
+                        id: studentNameDoc.id,
+                        data: () => docData,
+                        exists: true
+                    }, 
+                    method: 'studentNames',
+                    isNameCollection: true
+                };
+            }
+            
+            return null;
+        }
+        
+        async function handleSignUp(identifier1, identifier2, tempPassword, newPassword, confirmPassword, loginType) {
+            if (newPassword !== confirmPassword) {
+                showMessage('New passwords do not match!', 'error');
+                return false;
+            }
+            
+            if (newPassword.length < 4) {
+                showMessage('New password must be at least 4 characters', 'error');
+                return false;
+            }
+            
+            if (!tempPassword) {
+                showMessage('Please enter your temporary password from your teacher', 'error');
+                return false;
+            }
+            
+            try {
+                setLoading(true, 'signup');
+                
+                let studentResult = null;
+                
+                if (loginType === 'username') {
+                    if (!identifier1) {
+                        showMessage('Please enter your username', 'error');
+                        setLoading(false, 'signup');
+                        return false;
+                    }
+                    studentResult = await findStudentByUsername(identifier1);
+                } else {
+                    if (!identifier1 || !identifier2) {
+                        showMessage('Please enter both first name and last name', 'error');
+                        setLoading(false, 'signup');
+                        return false;
+                    }
+                    studentResult = await findStudentByName(identifier1, identifier2);
+                }
+                
+                if (!studentResult) {
+                    if (loginType === 'username') {
+                        showMessage('❌ Username not found in school records.', 'error');
+                    } else {
+                        showMessage('❌ Name not found in school records. Please check with your teacher.', 'error');
+                    }
+                    setLoading(false, 'signup');
+                    return false;
+                }
+                
+                const studentDoc = studentResult.studentDoc;
+                const studentId = studentDoc.id;
+                const studentData = studentDoc.data();
+                const isFromNameCollection = studentResult.isNameCollection;
+                
+                if (studentData.hasAccount === true) {
+                    showMessage('❌ This account already exists! Please login.', 'error');
+                    setLoading(false, 'signup');
+                    return false;
+                }
+                
+                const storedPassword = studentData.defaultPassword || studentData.tempPassword;
+                
+                if (!storedPassword || storedPassword !== tempPassword) {
+                    showMessage('❌ Incorrect temporary password!', 'error');
+                    setLoading(false, 'signup');
+                    return false;
+                }
+                
+                if (isFromNameCollection) {
+                    await updateDoc(doc(db, 'studentNames', studentId), {
+                        password: newPassword,
+                        hasAccount: true,
+                        accountCreatedAt: new Date().toISOString()
+                    });
+                } else {
+                    await updateDoc(doc(db, 'students', studentId), {
+                        password: newPassword,
+                        hasAccount: true,
+                        accountCreatedAt: new Date().toISOString()
+                    });
+                }
+                
+                showMessage(`✅ Account created! Please login.`, 'success');
+                
+                document.getElementById('signupUsername').value = '';
+                document.getElementById('signupFirstName').value = '';
+                document.getElementById('signupLastName').value = '';
+                document.getElementById('signupTempPassword').value = '';
+                document.getElementById('signupNewPassword').value = '';
+                document.getElementById('signupConfirmPassword').value = '';
+                
+                setTimeout(() => {
+                    switchTab('login');
+                    if (loginType === 'username') {
+                        document.getElementById('loginUsername').value = identifier1;
+                        switchLoginType('username');
+                    } else {
+                        document.getElementById('loginFirstName').value = identifier1;
+                        document.getElementById('loginLastName').value = identifier2;
+                        switchLoginType('name');
+                    }
+                    document.getElementById('loginPassword').focus();
+                }, 2000);
+                
+                setLoading(false, 'signup');
+                return true;
+                
+            } catch (error) {
+                console.error('Signup error:', error);
+                showMessage('Error: ' + error.message, 'error');
+                setLoading(false, 'signup');
+                return false;
+            }
+        }
+        
+        async function handleLogin(identifier1, identifier2, password, loginType) {
+            if (!password) {
+                showMessage('Please enter your password', 'error');
+                return false;
+            }
+            
+            try {
+                setLoading(true, 'login');
+                
+                let studentResult = null;
+                
+                if (loginType === 'username') {
+                    if (!identifier1) {
+                        showMessage('Please enter your username', 'error');
+                        setLoading(false, 'login');
+                        return false;
+                    }
+                    studentResult = await findStudentByUsername(identifier1);
+                } else {
+                    if (!identifier1 || !identifier2) {
+                        showMessage('Please enter both first name and last name', 'error');
+                        setLoading(false, 'login');
+                        return false;
+                    }
+                    studentResult = await findStudentByName(identifier1, identifier2);
+                }
+                
+                if (!studentResult) {
+                    if (loginType === 'username') {
+                        showMessage('❌ Username not found.', 'error');
+                    } else {
+                        showMessage('❌ Name not found. Please check your first and last name.', 'error');
+                    }
+                    setLoading(false, 'login');
+                    return false;
+                }
+                
+                const studentDoc = studentResult.studentDoc;
+                const studentData = studentDoc.data();
+                
+                if (!studentData.hasAccount || !studentData.password) {
+                    showMessage('❌ No account found. Please sign up first.', 'error');
+                    setLoading(false, 'login');
+                    return false;
+                }
+                
+                if (studentData.password !== password) {
+                    showMessage('❌ Incorrect password.', 'error');
+                    setLoading(false, 'login');
+                    return false;
+                }
+                
+                currentUser = {
+                    id: studentDoc.id,
+                    username: studentData.username,
+                    firstName: studentData.firstName || studentData.firstname,
+                    lastName: studentData.lastName || studentData.lastname,
+                    fullName: studentData.fullName || `${studentData.firstName || studentData.firstname || ''} ${studentData.lastName || studentData.lastname || ''}`.trim() || identifier1,
+                    studentId: studentData.studentId || 'N/A',
+                    class: studentData.class || 'Not Assigned',
+                    isFromNameCollection: studentResult.isNameCollection || false
+                };
+                
+                document.getElementById('studentName').textContent = currentUser.fullName || identifier1;
+                document.getElementById('studentId').textContent = currentUser.studentId;
+                document.getElementById('studentClass').textContent = currentUser.class;
+                document.getElementById('studentFullName').textContent = currentUser.fullName || `${currentUser.firstName || ''} ${currentUser.lastName || ''}`.trim() || identifier1;
+                
+                authContainer.style.display = 'none';
+                dashboardContainer.style.display = 'block';
+                
+                showMessage(`Welcome ${currentUser.fullName || identifier1}!`, 'success');
+                setLoading(false, 'login');
+                return true;
+                
+            } catch (error) {
+                console.error('Login error:', error);
+                showMessage('Login failed: ' + error.message, 'error');
+                setLoading(false, 'login');
+                return false;
+            }
+        }
+        
+        window.logout = function() {
+            currentUser = null;
+            authContainer.style.display = 'block';
+            dashboardContainer.style.display = 'none';
+            
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginFirstName').value = '';
+            document.getElementById('loginLastName').value = '';
+            document.getElementById('loginPassword').value = '';
+            document.getElementById('signupUsername').value = '';
+            document.getElementById('signupFirstName').value = '';
+            document.getElementById('signupLastName').value = '';
+            document.getElementById('signupTempPassword').value = '';
+            document.getElementById('signupNewPassword').value = '';
+            document.getElementById('signupConfirmPassword').value = '';
+            
+            showMessage('Logged out successfully!', 'success');
+            switchTab('signup');
+            switchLoginType('username');
+        };
+        
+        window.showResults = async function() {
+            const resultsModal = document.getElementById('resultsModal');
+            const resultsContent = document.getElementById('resultsContent');
+            
+            resultsModal.style.display = 'block';
+            resultsContent.innerHTML = '<div class="loading-spinner"></div> Loading your results...';
+            
+            try {
+                if (!currentUser) {
+                    resultsContent.innerHTML = '<p>❌ Please login again.</p>';
+                    return;
+                }
+                
+                let resultsQuery;
+                
+                if (currentUser.username) {
+                    resultsQuery = query(
+                        collection(db, 'results'),
+                        where('studentUsername', '==', currentUser.username)
+                    );
+                } else if (currentUser.firstName && currentUser.lastName) {
+                    resultsQuery = query(
+                        collection(db, 'results'),
+                        where('studentFirstName', '==', currentUser.firstName),
+                        where('studentLastName', '==', currentUser.lastName)
+                    );
+                } else {
+                    resultsContent.innerHTML = '<p>❌ Unable to fetch results. Missing student information.</p>';
+                    return;
+                }
+                
+                const resultsSnapshot = await getDocs(resultsQuery);
+                
+                if (resultsSnapshot.empty) {
+                    resultsContent.innerHTML = `
+                        <div class="no-results-icon">📭</div>
+                        <h3>No Results Available Yet</h3>
+                        <p>Your exam results haven't been uploaded yet.</p>
+                    `;
+                    return;
+                }
+                
+                let html = '<h2>📊 Your Exam Results</h2>';
+                for (const docSnap of resultsSnapshot.docs) {
+                    const exam = docSnap.data();
+                    let gradeDisplay = '';
+                    if (exam.originalGrade && exam.originalMaxScore) {
+                        gradeDisplay = `${exam.originalGrade}/${exam.originalMaxScore}`;
+                    } else {
+                        gradeDisplay = `${exam.gradeOutOf20}/20`;
+                    }
+                    
+                    html += `
+                        <div class="exam-card" onclick="viewExamDetails('${docSnap.id}')">
+                            <h3>📚 ${exam.examTitle || 'Exam'}</h3>
+                            <p><strong>Grade:</strong> ${gradeDisplay}</p>
+                            <p><strong>Score:</strong> ${exam.score}%</p>
+                            <p style="color: #2a5298; font-size: 14px;">Click for details →</p>
+                        </div>
+                    `;
+                }
+                resultsContent.innerHTML = html;
+                
+            } catch (error) {
+                console.error('Error loading results:', error);
+                resultsContent.innerHTML = '<p>❌ Error loading results.</p>';
+            }
+        };
+        
+        window.viewExamDetails = async function(examId) {
+            const resultsContent = document.getElementById('resultsContent');
+            
+            try {
+                const examDoc = await getDoc(doc(db, 'results', examId));
+                if (!examDoc.exists()) {
+                    resultsContent.innerHTML = '<p>❌ Exam not found</p>';
+                    return;
+                }
+                
+                const exam = examDoc.data();
+                
+                let gradeDisplay = '';
+                if (exam.originalGrade && exam.originalMaxScore) {
+                    gradeDisplay = `${exam.originalGrade}/${exam.originalMaxScore}`;
+                } else {
+                    gradeDisplay = `${exam.gradeOutOf20}/20`;
+                }
+                
+                let html = '<button class="back-btn" onclick="showResults()">← Back</button>';
+                html += `<h2>${exam.examTitle || 'Exam Details'}</h2>`;
+                html += `<p><strong>Grade:</strong> ${gradeDisplay}</p>`;
+                html += `<p><strong>Score:</strong> ${exam.score}%</p>`;
+                html += `<hr><h3>📝 Questions & Answers</h3>`;
+                
+                if (exam.questions && exam.questions.length > 0) {
+                    exam.questions.forEach((q, index) => {
+                        const isCorrect = q.isCorrect;
+                        html += `
+                            <div class="question-card ${isCorrect ? 'correct' : 'incorrect'}">
+                                <p><strong>Q${index + 1}: ${q.question}</strong></p>
+                                <p>📝 Your answer: ${q.studentAnswer}</p>
+                                <p>✅ Correct answer: ${q.correctAnswer}</p>
+                                <p>${isCorrect ? '✓ Correct!' : '✗ Incorrect'}</p>
+                            </div>
+                        `;
+                    });
+                } else {
+                    html += '<p>No question details available.</p>';
+                }
+                
+                resultsContent.innerHTML = html;
+            } catch (error) {
+                resultsContent.innerHTML = '<p>❌ Error loading details</p>';
+            }
+        };
+        
+        window.closeResults = function() {
+            document.getElementById('resultsModal').style.display = 'none';
+        };
+        
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            let identifier1, identifier2;
+            
+            if (currentLoginType === 'username') {
+                identifier1 = document.getElementById('loginUsername').value.trim();
+                identifier2 = null;
+            } else {
+                identifier1 = document.getElementById('loginFirstName').value.trim();
+                identifier2 = document.getElementById('loginLastName').value.trim();
+            }
+            
+            const password = document.getElementById('loginPassword').value.trim();
+            await handleLogin(identifier1, identifier2, password, currentLoginType);
+        });
+        
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            let identifier1, identifier2;
+            
+            if (currentLoginType === 'username') {
+                identifier1 = document.getElementById('signupUsername').value.trim();
+                identifier2 = null;
+            } else {
+                identifier1 = document.getElementById('signupFirstName').value.trim();
+                identifier2 = document.getElementById('signupLastName').value.trim();
+            }
+            
+            const tempPassword = document.getElementById('signupTempPassword').value.trim();
+            const newPassword = document.getElementById('signupNewPassword').value.trim();
+            const confirmPassword = document.getElementById('signupConfirmPassword').value.trim();
+            
+            await handleSignUp(identifier1, identifier2, tempPassword, newPassword, confirmPassword, currentLoginType);
+        });
+        
+        window.addEventListener('load', () => {
+            authContainer.style.display = 'block';
+            dashboardContainer.style.display = 'none';
+            switchTab('signup');
+            switchLoginType('username');
+        });
+        
+        window.onclick = function(event) {
+            const modal = document.getElementById('resultsModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        };
+    </script>
+
+    <!-- Three.js Background -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x0a0a2a);
+        scene.fog = new THREE.FogExp2(0x0a0a2a, 0.002);
+
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 2, 8);
+        camera.lookAt(0, 0, 0);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        container.appendChild(renderer.domElement);
+
+        const ambientLight = new THREE.AmbientLight(0x404060);
+        scene.add(ambientLight);
+        
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+        directionalLight.position.set(5, 10, 7);
+        scene.add(directionalLight);
+        
+        const backLight = new THREE.PointLight(0x2a5298, 0.5);
+        backLight.position.set(0, 2, -5);
+        scene.add(backLight);
+        
+        const fillLight = new THREE.PointLight(0x1e3c72, 0.3);
+        fillLight.position.set(3, 1, 2);
+        scene.add(fillLight);
+
+        const particleCount = 2000;
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesPositions = new Float32Array(particleCount * 3);
+        
+        for (let i = 0; i < particleCount; i++) {
+            particlesPositions[i * 3] = (Math.random() - 0.5) * 200;
+            particlesPositions[i * 3 + 1] = (Math.random() - 0.5) * 100;
+            particlesPositions[i * 3 + 2] = (Math.random() - 0.5) * 100 - 50;
+        }
+        
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(particlesPositions, 3));
+        const particlesMaterial = new THREE.PointsMaterial({ color: 0x4a7db4, size: 0.12, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending });
+        const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particles);
+
+        const knotGeometry = new THREE.TorusKnotGeometry(1.2, 0.25, 200, 32, 3, 4);
+        const knotMaterial = new THREE.MeshPhongMaterial({ color: 0x2a5298, emissive: 0x0a1a3a, shininess: 100, transparent: true, opacity: 0.8 });
+        const torusKnot = new THREE.Mesh(knotGeometry, knotMaterial);
+        torusKnot.position.set(0, -1, -3);
+        scene.add(torusKnot);
+
+        const icoGeometry = new THREE.IcosahedronGeometry(0.8, 0);
+        const icoMaterial = new THREE.MeshStandardMaterial({ color: 0x3a6bb0, metalness: 0.7, roughness: 0.3, emissive: 0x1e3c72, emissiveIntensity: 0.2 });
+        const icosahedron = new THREE.Mesh(icoGeometry, icoMaterial);
+        icosahedron.position.set(2.5, 0.5, -4);
+        scene.add(icosahedron);
+
+        const sphereWireGeometry = new THREE.SphereGeometry(1, 32, 32);
+        const wireframeMaterial = new THREE.MeshBasicMaterial({ color: 0x4a7db4, wireframe: true, transparent: true, opacity: 0.3 });
+        const wireframeSphere = new THREE.Mesh(sphereWireGeometry, wireframeMaterial);
+        wireframeSphere.position.set(-2, 1, -5);
+        scene.add(wireframeSphere);
+
+        const cubes = [];
+        const cubeCount = 16;
+        for (let i = 0; i < cubeCount; i++) {
+            const cubeGeo = new THREE.BoxGeometry(0.2, 0.2, 0.2);
+            const cubeMat = new THREE.MeshStandardMaterial({ color: 0x5a8dc4, emissive: 0x1e3c72, emissiveIntensity: 0.5 });
+            const cube = new THREE.Mesh(cubeGeo, cubeMat);
+            cubes.push(cube);
+            scene.add(cube);
+        }
+
+        const ringGeometry = new THREE.TorusGeometry(1.5, 0.05, 64, 200);
+        const ringMaterial = new THREE.MeshPhongMaterial({ color: 0x4a7db4, emissive: 0x1e3c72, transparent: true, opacity: 0.4 });
+        const ring1 = new THREE.Mesh(ringGeometry, ringMaterial);
+        ring1.rotation.x = Math.PI / 2;
+        ring1.position.y = -0.5;
+        ring1.position.z = -2;
+        scene.add(ring1);
+        
+        const ring2 = new THREE.Mesh(ringGeometry, ringMaterial);
+        ring2.rotation.z = Math.PI / 3;
+        ring2.rotation.x = Math.PI / 3;
+        ring2.position.y = 1;
+        ring2.position.z = -3;
+        scene.add(ring2);
+
+        const orbGeometry = new THREE.SphereGeometry(0.12, 16, 16);
+        const orbMaterial = new THREE.MeshStandardMaterial({ color: 0x7aade0, emissive: 0x2a5298, emissiveIntensity: 0.6 });
+        const orbs = [];
+        for (let i = 0; i < 40; i++) {
+            const orb = new THREE.Mesh(orbGeometry, orbMaterial);
+            orb.position.x = (Math.random() - 0.5) * 12;
+            orb.position.y = (Math.random() - 0.5) * 8;
+            orb.position.z = (Math.random() - 0.5) * 15 - 5;
+            scene.add(orb);
+            orbs.push(orb);
+        }
+
+        let mouseX = 0, mouseY = 0, targetRotationX = 0, targetRotationY = 0;
+        
+        document.addEventListener('mousemove', (event) => {
+            mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+            mouseY = (event.clientY / window.innerHeight) * 2 - 1;
+            targetRotationY = mouseX * 0.5;
+            targetRotationX = mouseY * 0.3;
+        });
+
+        let time = 0;
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            time += 0.008;
+            
+            camera.position.x += (targetRotationY * 0.5 - camera.position.x) * 0.05;
+            camera.position.y += (-targetRotationX * 0.3 - camera.position.y) * 0.05;
+            camera.lookAt(0, 0, -2);
+            
+            torusKnot.rotation.x = time * 0.5;
+            torusKnot.rotation.y = time * 0.8;
+            torusKnot.rotation.z = time * 0.3;
+            
+            icosahedron.rotation.x = time * 0.6;
+            icosahedron.rotation.y = time * 0.7;
+            
+            wireframeSphere.rotation.x = time * 0.4;
+            wireframeSphere.rotation.y = time * 0.5;
+            
+            ring1.rotation.z = time * 0.3;
+            ring2.rotation.x = time * 0.4;
+            ring2.rotation.y = time * 0.5;
+            
+            cubes.forEach((cube, index) => {
+                cube.rotation.x = time * 1.5;
+                cube.rotation.y = time * 1.2;
+                const angle = (index / cubes.length) * Math.PI * 2 + time;
+                const radius = 2.8;
+                cube.position.x = Math.cos(angle) * radius;
+                cube.position.z = Math.sin(angle) * radius - 2;
+                cube.position.y = Math.sin(angle * 2) * 1.2;
+            });
+            
+            particles.rotation.y = time * 0.05;
+            particles.rotation.x = Math.sin(time * 0.2) * 0.1;
+            
+            orbs.forEach((orb, idx) => {
+                orb.position.y += Math.sin(time * 2 + idx) * 0.002;
+                const scale = 0.8 + Math.sin(time * 3 + idx) * 0.3;
+                orb.scale.set(scale, scale, scale);
+            });
+            
+            backLight.intensity = 0.5 + Math.sin(time * 2) * 0.2;
+            fillLight.intensity = 0.3 + Math.sin(time * 1.5) * 0.1;
+            
+            renderer.render(scene, camera);
+        }
+        
+        animate();
+
+        window.addEventListener('resize', onWindowResize, false);
+        
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+    </script>
+</body>
+</html>

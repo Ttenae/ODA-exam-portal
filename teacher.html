@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Portal - Upload & Manage Exam Results</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .card h2 {
+            color: #2a5298;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #2a5298;
+        }
+
+        .input-group label {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: white;
+            padding: 0 6px;
+            color: #9ca3af;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            font-size: 15px;
+        }
+
+        .input-group input:focus ~ label,
+        .input-group input:valid ~ label {
+            top: 0;
+            font-size: 11px;
+            color: #2a5298;
+            font-weight: 600;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .btn-danger {
+            background: #dc2626;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #b91c1c;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .tab-btn {
+            flex: 1;
+            background: none;
+            border: none;
+            padding: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            color: #9ca3af;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            color: #2a5298;
+            border-bottom: 3px solid #2a5298;
+        }
+
+        .status {
+            padding: 12px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+            display: none;
+        }
+
+        .status.success {
+            background: #d1fae5;
+            color: #065f46;
+            display: block;
+        }
+
+        .status.error {
+            background: #fee2e2;
+            color: #991b1b;
+            display: block;
+        }
+
+        .status.info {
+            background: #dbeafe;
+            color: #1e40af;
+            display: block;
+        }
+
+        .status.warning {
+            background: #fef3c7;
+            color: #92400e;
+            display: block;
+        }
+
+        .upload-area {
+            border: 2px dashed #cbd5e1;
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .upload-area:hover {
+            border-color: #2a5298;
+            background: #f8fafc;
+        }
+
+        .upload-area.drag-over {
+            border-color: #2a5298;
+            background: #eff6ff;
+        }
+
+        .preview-table {
+            overflow-x: auto;
+            margin: 20px 0;
+            max-height: 300px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e293b;
+            position: sticky;
+            top: 0;
+        }
+
+        .sample-data {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 11px;
+            margin-top: 10px;
+            font-family: monospace;
+            text-align: left;
+        }
+
+        .teacher-info {
+            background: #e0e7ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .teacher-info span {
+            font-size: 16px;
+            color: #1e3c72;
+            font-weight: 500;
+        }
+
+        .logout-btn {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: auto;
+        }
+
+        .logout-btn:hover {
+            background: #b91c1c;
+        }
+
+        .admin-note {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 10px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #92400e;
+            border-radius: 8px;
+        }
+
+        .admin-badge {
+            background: #dc2626;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.6s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .switch-link {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .switch-link a {
+            color: #2a5298;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .switch-link a:hover {
+            text-decoration: underline;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        /* Admin Dashboard Styles */
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .exam-list-container, .failed-list-container, .subject-list-container {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .exam-item, .failed-item, .subject-item {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            border-left: 4px solid #2a5298;
+        }
+
+        .failed-item {
+            border-left-color: #dc2626;
+        }
+
+        .subject-item {
+            border-left-color: #10b981;
+        }
+
+        .exam-info h4, .failed-info h4, .subject-info h4 {
+            color: #1e3c72;
+            margin-bottom: 5px;
+        }
+
+        .exam-info p, .failed-info p, .subject-info p {
+            color: #6b7280;
+            font-size: 12px;
+        }
+
+        .delete-exam-btn, .view-details-btn {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .view-details-btn {
+            background: #2a5298;
+        }
+
+        .view-details-btn:hover {
+            background: #1e3c72;
+        }
+
+        .delete-exam-btn:hover {
+            background: #b91c1c;
+        }
+
+        .refresh-btn {
+            background: #2a5298;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: white;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 20px;
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .close-modal {
+            background: #2a5298;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .search-box {
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 600px) {
+            .card { padding: 30px 25px; }
+            .header h1 { font-size: 26px; }
+            .teacher-info { flex-direction: column; text-align: center; }
+            .exam-item, .failed-item, .subject-item { flex-direction: column; text-align: center; }
+            .admin-stats { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sign In Page -->
+    <div id="signinPage" class="container">
+        <div class="header">
+            <h1>👨‍🏫 Teacher Portal</h1>
+            <p>Sign in to manage exam results</p>
+        </div>
+
+        <div class="card">
+            <h2>🔐 Sign In</h2>
+            <div class="admin-note">⚠️ Admin Master Password required for all logins</div>
+            <div id="signinStatus" class="status"></div>
+            
+            <div class="input-group">
+                <input type="email" id="signinEmail" required>
+                <label>Email Address</label>
+            </div>
+            
+            <div class="input-group">
+                <input type="password" id="signinPassword" required>
+                <label>Password</label>
+            </div>
+            
+            <div class="input-group">
+                <input type="password" id="signinAdminPass" required>
+                <label>Admin Master Password</label>
+            </div>
+            
+            <button class="btn btn-primary" onclick="signIn()">Sign In →</button>
+            
+            <div class="switch-link">
+                <a onclick="showSignUp()">Don't have an account? Create one →</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sign Up Page -->
+    <div id="signupPage" class="container" style="display: none;">
+        <div class="header">
+            <h1>👨‍🏫 Teacher Portal</h1>
+            <p>Create your teacher account</p>
+        </div>
+
+        <div class="card">
+            <h2>📝 Create Account</h2>
+            <div class="admin-note">⚠️ Admin Master Password required for registration</div>
+            <div id="signupStatus" class="status"></div>
+            
+            <div class="input-group">
+                <input type="email" id="signupEmail" required>
+                <label>Email Address (must be from school)</label>
+            </div>
+            
+            <div class="input-group">
+                <input type="password" id="signupPassword" required>
+                <label>Create Password</label>
+            </div>
+            
+            <div class="input-group">
+                <input type="password" id="signupConfirmPassword" required>
+                <label>Confirm Password</label>
+            </div>
+            
+            <div class="input-group">
+                <input type="password" id="signupAdminPass" required>
+                <label>Admin Master Password</label>
+            </div>
+            
+            <button class="btn btn-primary" onclick="signUp()">Create Account →</button>
+            
+            <div class="switch-link">
+                <a onclick="showSignIn()">Already have an account? Sign In →</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboardPage" class="container dashboard-container" style="display: none;">
+        <div class="header">
+            <h1>👨‍🏫 Teacher Dashboard</h1>
+            <p>Upload exam results - Students will see them immediately</p>
+        </div>
+
+        <div class="card">
+            <div class="teacher-info">
+                <span>👋 Welcome, <span id="teacherName">Teacher</span>! <span id="adminBadge" class="admin-badge" style="display: none;">👑 Admin</span></span>
+                <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+            </div>
+
+            <h2>📤 Upload Exam Results (Excel)</h2>
+            
+            <div class="upload-area" id="uploadArea">
+                <div style="font-size: 48px;">📊</div>
+                <p>Click or drag & drop Excel file here</p>
+                <p style="font-size: 12px; color: #666;">.xlsx or .xls files only</p>
+                <p style="font-size: 11px; color: #888; margin-top: 10px;">📌 Exam title = Your Excel file name</p>
+                <p style="font-size: 11px; color: #888;">📌 Grade can be out of ANY value (20, 45, 50, 100, etc.) - auto-converted to /20</p>
+                <input type="file" id="fileInput" accept=".xlsx, .xls" style="display: none;">
+            </div>
+
+            <div id="uploadStatus" class="status"></div>
+            
+            <div id="preview" style="display: none;">
+                <h3>📋 Preview Data</h3>
+                <div class="preview-table" id="previewTable"></div>
+                <button class="btn btn-primary" id="uploadBtn">✅ Upload to Firebase</button>
+            </div>
+        </div>
+
+        <!-- Admin Dashboard Section -->
+        <div id="adminSection" class="card" style="display: none;">
+            <h2>📊 Admin Dashboard</h2>
+            
+            <div class="admin-stats" id="adminStats">
+                <div class="stat-card">
+                    <h3 id="totalExams">0</h3>
+                    <p>Total Exams</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="totalStudents">0</h3>
+                    <p>Total Students</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="totalSubjects">0</h3>
+                    <p>Total Subjects</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="totalFailed">0</h3>
+                    <p>Failed Uploads</p>
+                </div>
+            </div>
+            
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="showAdminTab('subjects')">📚 Subjects</button>
+                <button class="tab-btn" onclick="showAdminTab('exams')">📋 All Exams</button>
+                <button class="tab-btn" onclick="showAdminTab('failed')">⚠️ Failed Students</button>
+            </div>
+            
+            <div id="subjectsTab">
+                <div class="search-box">
+                    <input type="text" id="subjectSearch" placeholder="🔍 Search subject..." onkeyup="filterSubjects()">
+                </div>
+                <div id="subjectsListContainer" class="subject-list-container">
+                    <div id="subjectsList"></div>
+                </div>
+            </div>
+            
+            <div id="examsTab" style="display: none;">
+                <button class="btn btn-secondary refresh-btn" onclick="loadAllExams()">🔄 Refresh List</button>
+                <div class="search-box">
+                    <input type="text" id="examSearch" placeholder="🔍 Search exam..." onkeyup="filterExams()">
+                </div>
+                <div id="examsListContainer" class="exam-list-container">
+                    <div id="examsList"></div>
+                </div>
+            </div>
+            
+            <div id="failedTab" style="display: none;">
+                <button class="btn btn-secondary refresh-btn" onclick="loadFailedStudents()">🔄 Refresh List</button>
+                <div class="search-box">
+                    <input type="text" id="failedSearch" placeholder="🔍 Search failed student..." onkeyup="filterFailed()">
+                </div>
+                <div id="failedListContainer" class="failed-list-container">
+                    <div id="failedList"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📝 Excel Format Instructions</h2>
+            <div class="sample-data">
+                <strong>Required columns (unlimited questions):</strong><br>
+                First name | Last name | Username | Status | Started | Completed | Duration | Grade/XX.XX<br>
+                Question 1 | Response 1 | Right answer 1<br>
+                Question 2 | Response 2 | Right answer 2<br>
+                ... (any number of questions, auto-detected)<br><br>
+                <strong>📌 Grade column examples:</strong><br>
+                - "Grade/45.00" or "Grade/50.00" or "Grade/20.00" or "Score"<br>
+                - System automatically converts to /20 scale for storage<br><br>
+                <strong>📌 Exam title = Your Excel file name</strong>
+            </div>
+            <button class="btn btn-primary btn-secondary" id="downloadSample" style="margin-top: 20px;">
+                📥 Download Sample Excel Template
+            </button>
+        </div>
+        
+        <div class="footer">
+            <p>Created by Tesfaye Tilahun © 2026</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+        import { getFirestore, doc, getDoc, setDoc, collection, query, where, getDocs, deleteDoc } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyC3mzT04soXs1N5yhoCZnY6JHB4CW6RU6E",
+            authDomain: "student-portal-3201c.firebaseapp.com",
+            projectId: "student-portal-3201c",
+            storageBucket: "student-portal-3201c.firebasestorage.app",
+            messagingSenderId: "702013538228",
+            appId: "1:702013538228:web:e8826755e73e4c7fdb3ce1"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        console.log('Firebase initialized');
+        
+        const ADMIN_MASTER_PASSWORD = "admin123";
+        const ADMIN_EMAIL = "tesfaayeehabesha@gmail.com";
+        
+        let currentExcelData = null;
+        let currentFileName = null;
+        let currentTeacher = null;
+        let allowedTeacherEmails = new Set();
+        let isAdmin = false;
+        let allExamsData = [];
+        let allFailedStudents = [];
+        let allSubjects = new Map();
+        
+        async function loadAllowedTeachers() {
+            try {
+                const teachersSnapshot = await getDocs(collection(db, 'teachers'));
+                allowedTeacherEmails.clear();
+                teachersSnapshot.forEach(doc => {
+                    const data = doc.data();
+                    if (data.email) allowedTeacherEmails.add(data.email.toLowerCase());
+                });
+                console.log('Allowed teachers:', allowedTeacherEmails.size);
+            } catch (error) {
+                console.error('Error loading teachers:', error);
+            }
+        }
+        
+        function isEmailAllowed(email) {
+            return allowedTeacherEmails.has(email.toLowerCase());
+        }
+        
+        // Load all exams for admin
+        async function loadAllExams() {
+            const examsListDiv = document.getElementById('examsList');
+            const loadingDiv = document.getElementById('loadingExams');
+            if (loadingDiv) loadingDiv.style.display = 'block';
+            examsListDiv.innerHTML = '';
+            
+            try {
+                const resultsSnapshot = await getDocs(collection(db, 'results'));
+                allExamsData = [];
+                
+                if (resultsSnapshot.empty) {
+                    examsListDiv.innerHTML = '<p style="text-align: center; color: #6b7280;">No exams uploaded yet.</p>';
+                    if (loadingDiv) loadingDiv.style.display = 'none';
+                    return;
+                }
+                
+                // Group exams by title
+                const examsByTitle = new Map();
+                
+                resultsSnapshot.forEach(doc => {
+                    const exam = doc.data();
+                    const examTitle = exam.examTitle || 'Unknown Exam';
+                    if (!examsByTitle.has(examTitle)) {
+                        examsByTitle.set(examTitle, []);
+                    }
+                    examsByTitle.get(examTitle).push({ id: doc.id, ...exam });
+                    allExamsData.push({ id: doc.id, ...exam });
+                });
+                
+                // Update subject list
+                updateSubjectsList(examsByTitle);
+                
+                let html = '';
+                for (const [examTitle, exams] of examsByTitle) {
+                    const studentCount = exams.length;
+                    const totalStudents = new Set(exams.map(e => e.studentUsername)).size;
+                    const avgScore = exams.reduce((sum, e) => sum + (e.score || 0), 0) / exams.length;
+                    
+                    html += `
+                        <div class="exam-item" data-title="${examTitle.toLowerCase()}">
+                            <div class="exam-info">
+                                <h4>📚 ${examTitle}</h4>
+                                <p>📝 ${studentCount} exam records | 👨‍🎓 ${totalStudents} students</p>
+                                <p>📊 Avg Score: ${avgScore.toFixed(1)}% | 📅 Uploaded: ${new Date(exams[0].uploadedAt).toLocaleString() || 'N/A'}</p>
+                            </div>
+                            <button class="delete-exam-btn" onclick="deleteExamByTitle('${examTitle.replace(/'/g, "\\'")}')">
+                                🗑️ Delete All
+                            </button>
+                        </div>
+                    `;
+                }
+                
+                examsListDiv.innerHTML = html;
+                
+                // Update stats
+                document.getElementById('totalExams').textContent = examsByTitle.size;
+                document.getElementById('totalStudents').textContent = [...new Set(resultsSnapshot.docs.map(d => d.data().studentUsername))].length;
+                
+                if (loadingDiv) loadingDiv.style.display = 'none';
+                
+            } catch (error) {
+                console.error('Error loading exams:', error);
+                examsListDiv.innerHTML = '<p style="text-align: center; color: #dc2626;">Error loading exams.</p>';
+                if (loadingDiv) loadingDiv.style.display = 'none';
+            }
+        }
+        
+        function updateSubjectsList(examsByTitle) {
+            allSubjects.clear();
+            for (const [examTitle, exams] of examsByTitle) {
+                // Extract subject from exam title (e.g., "eng12 secA-model" -> "English Grade 12")
+                let subject = examTitle;
+                if (examTitle.toLowerCase().includes('eng')) subject = 'English Grade 12';
+                else if (examTitle.toLowerCase().includes('math')) subject = 'Mathematics Grade 12';
+                else if (examTitle.toLowerCase().includes('phy')) subject = 'Physics Grade 12';
+                else if (examTitle.toLowerCase().includes('chem')) subject = 'Chemistry Grade 12';
+                else if (examTitle.toLowerCase().includes('bio')) subject = 'Biology Grade 12';
+                else subject = examTitle.split('-')[0] || examTitle;
+                
+                if (!allSubjects.has(subject)) {
+                    allSubjects.set(subject, {
+                        name: subject,
+                        exams: [],
+                        totalStudents: 0,
+                        totalRecords: 0
+                    });
+                }
+                const subjectData = allSubjects.get(subject);
+                subjectData.exams.push(examTitle);
+                subjectData.totalRecords += exams.length;
+                subjectData.totalStudents += new Set(exams.map(e => e.studentUsername)).size;
+            }
+            
+            displaySubjects();
+        }
+        
+        function displaySubjects() {
+            const subjectsListDiv = document.getElementById('subjectsList');
+            if (!subjectsListDiv) return;
+            
+            let html = '';
+            for (const [subject, data] of allSubjects) {
+                html += `
+                    <div class="subject-item" data-subject="${subject.toLowerCase()}">
+                        <div class="exam-info">
+                            <h4>📚 ${subject}</h4>
+                            <p>📝 ${data.totalRecords} exam records | 👨‍🎓 ${data.totalStudents} students</p>
+                            <p>📋 Exams: ${data.exams.join(', ')}</p>
+                        </div>
+                        <button class="view-details-btn" onclick="viewSubjectDetails('${subject.replace(/'/g, "\\'")}')">
+                            View Details →
+                        </button>
+                    </div>
+                `;
+            }
+            subjectsListDiv.innerHTML = html || '<p style="text-align: center; color: #6b7280;">No subjects found.</p>';
+            document.getElementById('totalSubjects').textContent = allSubjects.size;
+        }
+        
+        // Load failed students from localStorage
+        function loadFailedStudents() {
+            const failedListDiv = document.getElementById('failedList');
+            const stored = localStorage.getItem('failedUploads');
+            
+            if (stored) {
+                allFailedStudents = JSON.parse(stored);
+            }
+            
+            if (allFailedStudents.length === 0) {
+                failedListDiv.innerHTML = '<p style="text-align: center; color: #6b7280;">No failed uploads recorded.</p>';
+                document.getElementById('totalFailed').textContent = '0';
+                return;
+            }
+            
+            let html = '';
+            allFailedStudents.forEach((failed, index) => {
+                html += `
+                    <div class="failed-item" data-failed="${failed.username?.toLowerCase() || ''}">
+                        <div class="failed-info">
+                            <h4>❌ ${failed.username || 'Unknown Student'}</h4>
+                            <p>📚 Exam: ${failed.examTitle || 'Unknown Exam'}</p>
+                            <p>📅 Date: ${new Date(failed.date).toLocaleString()}</p>
+                            <p>⚠️ Reason: ${failed.reason}</p>
+                        </div>
+                        <button class="delete-exam-btn" onclick="removeFailedStudent(${index})">
+                            Remove
+                        </button>
+                    </div>
+                `;
+            });
+            failedListDiv.innerHTML = html;
+            document.getElementById('totalFailed').textContent = allFailedStudents.length;
+        }
+        
+        function addFailedStudent(username, examTitle, reason) {
+            const failedRecord = {
+                username: username,
+                examTitle: examTitle,
+                reason: reason,
+                date: new Date().toISOString()
+            };
+            allFailedStudents.unshift(failedRecord);
+            // Keep only last 100 failed records
+            if (allFailedStudents.length > 100) allFailedStudents = allFailedStudents.slice(0, 100);
+            localStorage.setItem('failedUploads', JSON.stringify(allFailedStudents));
+            if (isAdmin && document.getElementById('failedTab').style.display !== 'none') {
+                loadFailedStudents();
+            }
+        }
+        
+        window.removeFailedStudent = function(index) {
+            allFailedStudents.splice(index, 1);
+            localStorage.setItem('failedUploads', JSON.stringify(allFailedStudents));
+            loadFailedStudents();
+        };
+        
+        window.viewSubjectDetails = function(subject) {
+            const subjectData = allSubjects.get(subject);
+            if (subjectData) {
+                alert(`Subject: ${subject}\nExams: ${subjectData.exams.join('\n')}\nTotal Records: ${subjectData.totalRecords}\nTotal Students: ${subjectData.totalStudents}`);
+            }
+        };
+        
+        window.filterSubjects = function() {
+            const searchTerm = document.getElementById('subjectSearch')?.value.toLowerCase() || '';
+            const items = document.querySelectorAll('#subjectsList .subject-item');
+            items.forEach(item => {
+                const subject = item.getAttribute('data-subject') || '';
+                item.style.display = subject.includes(searchTerm) ? 'flex' : 'none';
+            });
+        };
+        
+        window.filterExams = function() {
+            const searchTerm = document.getElementById('examSearch')?.value.toLowerCase() || '';
+            const items = document.querySelectorAll('#examsList .exam-item');
+            items.forEach(item => {
+                const title = item.getAttribute('data-title') || '';
+                item.style.display = title.includes(searchTerm) ? 'flex' : 'none';
+            });
+        };
+        
+        window.filterFailed = function() {
+            const searchTerm = document.getElementById('failedSearch')?.value.toLowerCase() || '';
+            const items = document.querySelectorAll('#failedList .failed-item');
+            items.forEach(item => {
+                const failed = item.getAttribute('data-failed') || '';
+                item.style.display = failed.includes(searchTerm) ? 'flex' : 'none';
+            });
+        };
+        
+        window.showAdminTab = function(tab) {
+            const subjectsTab = document.getElementById('subjectsTab');
+            const examsTab = document.getElementById('examsTab');
+            const failedTab = document.getElementById('failedTab');
+            const btns = document.querySelectorAll('.tab-btn');
+            
+            btns.forEach(btn => btn.classList.remove('active'));
+            
+            if (tab === 'subjects') {
+                subjectsTab.style.display = 'block';
+                examsTab.style.display = 'none';
+                failedTab.style.display = 'none';
+                btns[0].classList.add('active');
+                displaySubjects();
+            } else if (tab === 'exams') {
+                subjectsTab.style.display = 'none';
+                examsTab.style.display = 'block';
+                failedTab.style.display = 'none';
+                btns[1].classList.add('active');
+                loadAllExams();
+            } else if (tab === 'failed') {
+                subjectsTab.style.display = 'none';
+                examsTab.style.display = 'none';
+                failedTab.style.display = 'block';
+                btns[2].classList.add('active');
+                loadFailedStudents();
+            }
+        };
+        
+        // Delete exam by title (admin only)
+        window.deleteExamByTitle = async function(examTitle) {
+            if (!isAdmin) {
+                alert('Only admin can delete exams!');
+                return;
+            }
+            
+            if (!confirm(`⚠️ Are you sure you want to delete ALL records for "${examTitle}"?\n\nThis action cannot be undone!`)) {
+                return;
+            }
+            
+            const deleteStatus = document.getElementById('uploadStatus');
+            deleteStatus.textContent = 'Deleting...';
+            deleteStatus.className = 'status info';
+            deleteStatus.style.display = 'block';
+            
+            try {
+                const resultsQuery = query(
+                    collection(db, 'results'),
+                    where('examTitle', '==', examTitle)
+                );
+                const snapshot = await getDocs(resultsQuery);
+                
+                let deleted = 0;
+                for (const doc of snapshot.docs) {
+                    await deleteDoc(doc.ref);
+                    deleted++;
+                }
+                
+                deleteStatus.textContent = `✅ Deleted ${deleted} exam record(s) for "${examTitle}"`;
+                deleteStatus.className = 'status success';
+                
+                await loadAllExams();
+                
+                setTimeout(() => {
+                    deleteStatus.style.display = 'none';
+                }, 3000);
+                
+            } catch (error) {
+                console.error('Delete error:', error);
+                deleteStatus.textContent = `❌ Error deleting: ${error.message}`;
+                deleteStatus.className = 'status error';
+                setTimeout(() => deleteStatus.style.display = 'none', 3000);
+            }
+        };
+        
+        window.addEventListener('load', async () => {
+            try { await signOut(auth); } catch (e) {}
+            localStorage.clear();
+            sessionStorage.clear();
+            document.getElementById('signinPage').style.display = 'block';
+            document.getElementById('signupPage').style.display = 'none';
+            document.getElementById('dashboardPage').style.display = 'none';
+            currentTeacher = null;
+            isAdmin = false;
+        });
+        
+        window.signUp = async function() {
+            const email = document.getElementById('signupEmail').value.trim();
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('signupConfirmPassword').value;
+            const adminPass = document.getElementById('signupAdminPass').value;
+            const signupStatus = document.getElementById('signupStatus');
+            
+            signupStatus.style.display = 'block';
+            
+            if (!email || !password || !adminPass) {
+                signupStatus.textContent = 'Please fill all fields including Admin Password';
+                signupStatus.className = 'status error';
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                signupStatus.textContent = 'Passwords do not match';
+                signupStatus.className = 'status error';
+                return;
+            }
+            
+            if (password.length < 6) {
+                signupStatus.textContent = 'Password must be at least 6 characters';
+                signupStatus.className = 'status error';
+                return;
+            }
+            
+            if (adminPass !== ADMIN_MASTER_PASSWORD) {
+                signupStatus.textContent = '❌ Invalid Admin Master Password. Access denied.';
+                signupStatus.className = 'status error';
+                return;
+            }
+            
+            await loadAllowedTeachers();
+            if (!isEmailAllowed(email)) {
+                signupStatus.textContent = `❌ Email "${email}" is not authorized.`;
+                signupStatus.className = 'status error';
+                return;
+            }
+            
+            signupStatus.textContent = 'Creating account...';
+            signupStatus.className = 'status info';
+            
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+                
+                const teachersQuery = query(collection(db, 'teachers'), where('email', '==', email));
+                const teacherSnapshot = await getDocs(teachersQuery);
+                let teacherData = null;
+                teacherSnapshot.forEach(doc => { teacherData = doc.data(); });
+                
+                if (teacherData) {
+                    await setDoc(doc(db, 'teachers', user.uid), {
+                        ...teacherData,
+                        uid: user.uid,
+                        hasAccount: true,
+                        registeredAt: new Date().toISOString()
+                    });
+                } else {
+                    await setDoc(doc(db, 'teachers', user.uid), {
+                        uid: user.uid,
+                        email: email,
+                        fullName: email.split('@')[0],
+                        hasAccount: true,
+                        registeredAt: new Date().toISOString()
+                    });
+                }
+                
+                await signOut(auth);
+                
+                signupStatus.textContent = '✅ Account created! Please sign in.';
+                signupStatus.className = 'status success';
+                
+                document.getElementById('signupEmail').value = '';
+                document.getElementById('signupPassword').value = '';
+                document.getElementById('signupConfirmPassword').value = '';
+                document.getElementById('signupAdminPass').value = '';
+                
+                setTimeout(() => {
+                    showSignIn();
+                    document.getElementById('signinEmail').value = email;
+                }, 2000);
+                
+            } catch (error) {
+                console.error('Signup error:', error);
+                signupStatus.textContent = 'Signup failed: ' + error.message;
+                signupStatus.className = 'status error';
+            }
+        };
+        
+        window.signIn = async function() {
+            const email = document.getElementById('signinEmail').value.trim();
+            const password = document.getElementById('signinPassword').value;
+            const adminPass = document.getElementById('signinAdminPass').value;
+            const signinStatus = document.getElementById('signinStatus');
+            
+            signinStatus.style.display = 'block';
+            
+            if (!email || !password || !adminPass) {
+                signinStatus.textContent = 'Please enter email, password and Admin Password';
+                signinStatus.className = 'status error';
+                return;
+            }
+            
+            if (adminPass !== ADMIN_MASTER_PASSWORD) {
+                signinStatus.textContent = '❌ Invalid Admin Master Password.';
+                signinStatus.className = 'status error';
+                return;
+            }
+            
+            signinStatus.textContent = 'Signing in...';
+            signinStatus.className = 'status info';
+            
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+                const teacherDoc = await getDoc(doc(db, 'teachers', user.uid));
+                
+                if (!teacherDoc.exists()) {
+                    await signOut(auth);
+                    signinStatus.textContent = 'Not authorized as teacher';
+                    signinStatus.className = 'status error';
+                    return;
+                }
+                
+                currentTeacher = teacherDoc.data();
+                document.getElementById('teacherName').textContent = currentTeacher.fullName || email.split('@')[0];
+                
+                if (email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+                    isAdmin = true;
+                    document.getElementById('adminBadge').style.display = 'inline-block';
+                    document.getElementById('adminSection').style.display = 'block';
+                    await loadAllExams();
+                    loadFailedStudents();
+                } else {
+                    isAdmin = false;
+                    document.getElementById('adminBadge').style.display = 'none';
+                    document.getElementById('adminSection').style.display = 'none';
+                }
+                
+                document.getElementById('signinPage').style.display = 'none';
+                document.getElementById('signupPage').style.display = 'none';
+                document.getElementById('dashboardPage').style.display = 'block';
+                
+                document.getElementById('signinPassword').value = '';
+                document.getElementById('signinAdminPass').value = '';
+                
+            } catch (error) {
+                signinStatus.textContent = 'Error: ' + error.message;
+                signinStatus.className = 'status error';
+            }
+        };
+        
+        window.logout = async function() {
+            await signOut(auth);
+            currentTeacher = null;
+            isAdmin = false;
+            document.getElementById('dashboardPage').style.display = 'none';
+            document.getElementById('signinPage').style.display = 'block';
+            document.getElementById('signupPage').style.display = 'none';
+            document.getElementById('signinPassword').value = '';
+            document.getElementById('signinAdminPass').value = '';
+        };
+        
+        window.showSignUp = function() {
+            document.getElementById('signinPage').style.display = 'none';
+            document.getElementById('signupPage').style.display = 'block';
+            document.getElementById('signupStatus').className = 'status';
+            document.getElementById('signupStatus').style.display = 'none';
+        };
+        
+        window.showSignIn = function() {
+            document.getElementById('signinPage').style.display = 'block';
+            document.getElementById('signupPage').style.display = 'none';
+            document.getElementById('signinStatus').className = 'status';
+            document.getElementById('signinStatus').style.display = 'none';
+        };
+        
+        function showStatus(message, type) {
+            const div = document.getElementById('uploadStatus');
+            div.textContent = message;
+            div.className = `status ${type}`;
+            div.style.display = 'block';
+            setTimeout(() => div.style.display = 'none', 5000);
+        }
+        
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        
+        if (uploadArea) {
+            uploadArea.onclick = () => fileInput.click();
+            uploadArea.ondragover = (e) => { e.preventDefault(); uploadArea.classList.add('drag-over'); };
+            uploadArea.ondragleave = () => uploadArea.classList.remove('drag-over');
+            uploadArea.ondrop = (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('drag-over');
+                if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+            };
+        }
+        
+        if (fileInput) {
+            fileInput.onchange = (e) => { if (e.target.files[0]) handleFile(e.target.files[0]); };
+        }
+        
+        function handleFile(file) {
+            if (!file.name.match(/\.(xlsx|xls)$/)) {
+                showStatus('Please upload Excel file', 'error');
+                return;
+            }
+            
+            currentFileName = file.name.replace(/\.(xlsx|xls)$/i, '');
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const sheet = workbook.Sheets[workbook.SheetNames[0]];
+                const jsonData = XLSX.utils.sheet_to_json(sheet);
+                if (jsonData.length === 0) return;
+                currentExcelData = jsonData;
+                
+                console.log('File name (exam title):', currentFileName);
+                console.log('First row of Excel:', jsonData[0]);
+                
+                displayPreview(jsonData);
+                showStatus(`📁 Exam Title: "${currentFileName}" - ${jsonData.length} records loaded`, 'info');
+            };
+            reader.readAsArrayBuffer(file);
+        }
+        
+        function displayPreview(data) {
+            const previewDiv = document.getElementById('preview');
+            const previewTable = document.getElementById('previewTable');
+            const previewData = data.slice(0, 5);
+            let html = `<div style="margin-bottom: 15px; padding: 10px; background: #e0e7ff; border-radius: 8px;">
+                            <strong>📁 Exam Title:</strong> ${currentFileName}
+                        </div>`;
+            html += '<tr><thead><tr>';
+            const headers = Object.keys(previewData[0]);
+            headers.slice(0, 10).forEach(h => html += `<th>${h.substring(0, 30)}</th>`);
+            if (headers.length > 10) html += '<th>...</th>';
+            html += '</thead><tbody>';
+            previewData.forEach(row => {
+                html += '<tr>';
+                headers.slice(0, 10).forEach(h => {
+                    let val = row[h];
+                    if (val && val.length > 50) val = val.substring(0, 47) + '...';
+                    html += `<td>${val || '-'}</td>`;
+                });
+                if (headers.length > 10) html += '<td>...</td>';
+                html += '</tr>';
+            });
+            html += '</tbody></table>';
+            previewTable.innerHTML = html;
+            previewDiv.style.display = 'block';
+        }
+        
+        const uploadBtn = document.getElementById('uploadBtn');
+        if (uploadBtn) {
+            uploadBtn.onclick = async () => {
+                if (!currentExcelData) {
+                    showStatus('No data to upload', 'error');
+                    return;
+                }
+                
+                if (!currentFileName) {
+                    showStatus('No file name detected', 'error');
+                    return;
+                }
+                
+                uploadBtn.disabled = true;
+                uploadBtn.innerHTML = '<span class="loading"></span> Uploading...';
+                
+                let uploaded = 0;
+                let failed = 0;
+                let processedStudents = new Set();
+                const failedStudentsList = [];
+                const examTitle = currentFileName;
+                
+                console.log('========== STARTING UPLOAD ==========');
+                console.log('Total records:', currentExcelData.length);
+                
+                for (let i = 0; i < currentExcelData.length; i++) {
+                    const record = currentExcelData[i];
+                    
+                    try {
+                        let username = record.Username || record.username;
+                        if (!username) {
+                            for (const key of Object.keys(record)) {
+                                if (key.toLowerCase().includes('user')) {
+                                    username = record[key];
+                                    break;
+                                }
+                            }
+                        }
+                        
+                        if (!username) {
+                            console.log('❌ FAIL: No username found');
+                            failed++;
+                            failedStudentsList.push({ username: 'Unknown', reason: 'No username found' });
+                            continue;
+                        }
+                        
+                        let cleanUsername = username;
+                        if (username.endsWith('_a')) {
+                            cleanUsername = username.slice(0, -2);
+                        }
+                        
+                        const firstname = record['First name'] || record.Firstname || record.firstname || '';
+                        const lastname = record['Last name'] || record.Lastname || record.lastname || '';
+                        
+                        if (processedStudents.has(cleanUsername)) {
+                            continue;
+                        }
+                        
+                        let gradeValue = null;
+                        let gradeColumnName = null;
+                        for (const key of Object.keys(record)) {
+                            if (key.toLowerCase().includes('grade') || key.toLowerCase().includes('score')) {
+                                gradeValue = record[key];
+                                gradeColumnName = key;
+                                break;
+                            }
+                        }
+                        
+                        if (!gradeValue) {
+                            console.log('❌ FAIL: No grade found');
+                            failed++;
+                            failedStudentsList.push({ username: cleanUsername, reason: 'No grade column found' });
+                            continue;
+                        }
+                        
+                        let grade = parseFloat(gradeValue);
+                        if (isNaN(grade)) {
+                            console.log('❌ FAIL: Invalid grade');
+                            failed++;
+                            failedStudentsList.push({ username: cleanUsername, reason: 'Invalid grade value' });
+                            continue;
+                        }
+                        
+                        let maxScore = 20;
+                        const maxMatch = gradeColumnName?.match(/\/(\d+(?:\.\d+)?)/);
+                        if (maxMatch) {
+                            maxScore = parseFloat(maxMatch[1]);
+                            grade = (grade / maxScore) * 20;
+                        }
+                        
+                        const questions = [];
+                        let qNum = 1;
+                        while (true) {
+                            const question = record[`Question ${qNum}`] || record[`question ${qNum}`];
+                            const response = record[`Response ${qNum}`] || record[`response ${qNum}`];
+                            const correct = record[`Right answer ${qNum}`] || record[`right answer ${qNum}`];
+                            if (question && response && correct) {
+                                questions.push({
+                                    questionNumber: qNum,
+                                    question: question.toString(),
+                                    studentAnswer: response.toString(),
+                                    correctAnswer: correct.toString(),
+                                    isCorrect: response.toString().toLowerCase().trim() === correct.toString().toLowerCase().trim()
+                                });
+                                qNum++;
+                            } else {
+                                break;
+                            }
+                        }
+                        
+                        // Find student
+                        let studentUid = null;
+                        let finalUsername = cleanUsername;
+                        
+                        const usernameDoc = await getDoc(doc(db, 'usernames', cleanUsername.toLowerCase()));
+                        if (usernameDoc.exists()) {
+                            studentUid = usernameDoc.data().uid;
+                        }
+                        
+                        if (!studentUid && firstname && lastname) {
+                            const combined = `${firstname.toLowerCase().trim()}_${lastname.toLowerCase().trim()}`;
+                            const nameDoc = await getDoc(doc(db, 'studentNames', combined));
+                            if (nameDoc.exists()) {
+                                studentUid = nameDoc.data().uid;
+                                finalUsername = nameDoc.data().username || cleanUsername;
+                            }
+                        }
+                        
+                        if (!studentUid && firstname && lastname) {
+                            const studentsQuery = query(
+                                collection(db, 'students'),
+                                where('firstName', '==', firstname),
+                                where('lastName', '==', lastname)
+                            );
+                            const snapshot = await getDocs(studentsQuery);
+                            if (!snapshot.empty) {
+                                studentUid = snapshot.docs[0].id;
+                                finalUsername = snapshot.docs[0].data().username || cleanUsername;
+                            }
+                        }
+                        
+                        if (!studentUid) {
+                            console.log(`❌ FAIL: Student not found - ${cleanUsername}`);
+                            failed++;
+                            failedStudentsList.push({ username: cleanUsername, reason: 'Student not found in database' });
+                            continue;
+                        }
+                        
+                        processedStudents.add(cleanUsername);
+                        
+                        const examId = `EXAM_${Date.now()}_${finalUsername}`;
+                        await setDoc(doc(db, 'results', `${finalUsername}_${examId}`), {
+                            studentId: studentUid,
+                            studentUsername: finalUsername,
+                            examId: examId,
+                            examTitle: examTitle,
+                            gradeOutOf20: parseFloat(grade.toFixed(2)),
+                            originalGrade: gradeValue,
+                            originalMaxScore: maxScore,
+                            score: Math.round((grade / 20) * 100),
+                            totalQuestions: questions.length,
+                            correctAnswers: questions.filter(q => q.isCorrect).length,
+                            questions: questions,
+                            status: record.Status || record.status || 'Finished',
+                            started: record.Started || record.started || '',
+                            completed: record.Completed || record.completed || '',
+                            duration: record.Duration || record.duration || '',
+                            uploadedBy: currentTeacher?.email,
+                            uploadedAt: new Date().toISOString()
+                        });
+                        
+                        console.log(`✅ Uploaded: ${finalUsername}`);
+                        uploaded++;
+                        
+                    } catch (error) {
+                        console.error('❌ ERROR:', error);
+                        failed++;
+                        failedStudentsList.push({ username: 'Unknown', reason: error.message });
+                    }
+                }
+                
+                // Save failed students to global list
+                for (const failedStudent of failedStudentsList) {
+                    addFailedStudent(failedStudent.username, examTitle, failedStudent.reason);
+                }
+                
+                console.log('\n========== UPLOAD SUMMARY ==========');
+                console.log(`Total: ${currentExcelData.length}`);
+                console.log(`Uploaded: ${uploaded}`);
+                console.log(`Failed: ${failed}`);
+                console.log('=====================================\n');
+                
+                let message = `✅ ${uploaded} uploaded, ${failed} failed.`;
+                if (failed > 0) {
+                    message += ` Failed students saved to list.`;
+                }
+                showStatus(message, failed > 0 ? 'warning' : 'success');
+                uploadBtn.disabled = false;
+                uploadBtn.innerHTML = '✅ Upload to Firebase';
+                
+                if (isAdmin) {
+                    await loadAllExams();
+                    loadFailedStudents();
+                }
+                
+                setTimeout(() => {
+                    document.getElementById('preview').style.display = 'none';
+                    fileInput.value = '';
+                    currentExcelData = null;
+                    processedStudents.clear();
+                }, 3000);
+            };
+        }
+        
+        const downloadBtn = document.getElementById('downloadSample');
+        if (downloadBtn) {
+            downloadBtn.onclick = () => {
+                const sampleData = [{
+                    'First name': 'Abdi',
+                    'Last name': 'Gizachew',
+                    'Username': 'abdi_gizachew',
+                    'Status': 'Finished',
+                    'Started': '6 May 2026 9:36 AM',
+                    'Completed': '6 May 2026 9:52 AM',
+                    'Duration': '15 mins 49 secs',
+                    'Grade/100.00': 85,
+                    'Question 1': 'What is HTML?',
+                    'Response 1': 'Hypertext Markup Language',
+                    'Right answer 1': 'Hypertext Markup Language',
+                    'Question 2': 'What does CSS stand for?',
+                    'Response 2': 'Cascading Style Sheets',
+                    'Right answer 2': 'Cascading Style Sheets'
+                }];
+                const ws = XLSX.utils.json_to_sheet(sampleData);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, 'Exam Results');
+                XLSX.writeFile(wb, 'Sample_Exam.xlsx');
+                showStatus('Sample template downloaded!', 'success');
+            };
+        }
+        
+        loadAllowedTeachers();
+    </script>
+</body>
+</html>

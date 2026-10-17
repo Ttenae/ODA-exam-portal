@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>✨ 3D Subject Hub | White & Blue | Login Redirect</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #f0f4ff 0%, #e0e8ff 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1.5rem;
+      position: relative;
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    /* === 3D MOVABLE BACKGROUND (Parallax depth with mouse) === */
+    .parallax-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .layer {
+      position: absolute;
+      will-change: transform;
+      border-radius: 50%;
+      filter: blur(60px);
+      transition: transform 0.08s linear;
+    }
+
+    /* Blue & white floating orbs with depth */
+    .layer-1 {
+      width: 50vw;
+      height: 50vw;
+      background: radial-gradient(circle, rgba(70, 140, 255, 0.25), rgba(30, 90, 210, 0.08));
+      top: -15%;
+      left: -20%;
+    }
+
+    .layer-2 {
+      width: 65vh;
+      height: 65vh;
+      background: radial-gradient(circle, rgba(100, 180, 255, 0.2), rgba(50, 120, 240, 0.05));
+      bottom: -25%;
+      right: -15%;
+    }
+
+    .layer-3 {
+      width: 40vw;
+      height: 40vw;
+      background: radial-gradient(circle, rgba(150, 200, 255, 0.2), rgba(80, 150, 250, 0.08));
+      top: 50%;
+      left: 70%;
+    }
+
+    .layer-4 {
+      width: 30vw;
+      height: 30vw;
+      background: radial-gradient(circle, rgba(200, 225, 255, 0.3), rgba(100, 160, 255, 0.1));
+      bottom: 10%;
+      left: 10%;
+    }
+
+    .layer-5 {
+      width: 28vw;
+      height: 28vw;
+      background: radial-gradient(circle, rgba(55, 120, 245, 0.2), rgba(25, 80, 200, 0.05));
+      top: 20%;
+      left: 30%;
+    }
+
+    /* main card container — glassmorphic, white/blue theme */
+    .dashboard {
+      max-width: 1200px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(12px);
+      border-radius: 3rem;
+      padding: 2rem 2rem 2.2rem 2rem;
+      box-shadow: 0 30px 50px -20px rgba(0, 30, 80, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      transition: all 0.2s ease;
+      z-index: 10;
+      position: relative;
+    }
+
+    /* header area */
+    .header {
+      text-align: center;
+      margin-bottom: 2.8rem;
+    }
+
+    .header h1 {
+      font-size: 2.6rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #1a3c7a, #2c5aa6, #1e4a8f);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      letter-spacing: -0.5px;
+      text-shadow: 2px 2px 12px rgba(70, 130, 255, 0.2);
+    }
+
+    .header p {
+      color: #1e4a76;
+      font-weight: 500;
+      margin-top: 0.6rem;
+      font-size: 1.08rem;
+      background: rgba(255, 255, 255, 0.8);
+      display: inline-block;
+      padding: 0.3rem 1.5rem;
+      border-radius: 40px;
+      backdrop-filter: blur(4px);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    }
+
+    /* button grid - modern responsive */
+    .button-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    /* 3D button styles — white and blue tints, with lift and depth */
+    .subject-btn {
+      background: white;
+      border: none;
+      border-radius: 2rem;
+      padding: 1.3rem 0.6rem;
+      font-size: 1.25rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.2);
+      box-shadow: 0 12px 18px -8px rgba(0, 40, 80, 0.15), 0 0 0 1px rgba(70, 130, 255, 0.2);
+      color: #0a2b44;
+      letter-spacing: -0.2px;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(2px);
+      background: linear-gradient(145deg, #ffffff, #f5f9ff);
+    }
+
+    /* individual subtle blue accent per button (bottom border & hover tint) */
+    .subject-btn:nth-child(1) { border-bottom: 4px solid #3b82f6; }
+    .subject-btn:nth-child(2) { border-bottom: 4px solid #2c6e9e; }
+    .subject-btn:nth-child(3) { border-bottom: 4px solid #4d9eff; }
+    .subject-btn:nth-child(4) { border-bottom: 4px solid #1e88e5; }
+    .subject-btn:nth-child(5) { border-bottom: 4px solid #4299e1; }
+    .subject-btn:nth-child(6) { border-bottom: 4px solid #3182ce; }
+    .subject-btn:nth-child(7) { border-bottom: 4px solid #2b6cb0; }
+    .subject-btn:nth-child(8) { border-bottom: 4px solid #0f52ba; }
+
+    /* shiny 3D effect on hover */
+    .subject-btn::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(100, 160, 255, 0.2), transparent);
+      transition: left 0.55s ease;
+    }
+
+    .subject-btn:hover::before {
+      left: 100%;
+    }
+
+    .btn-icon {
+      font-size: 1.8rem;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+      transition: transform 0.2s ease;
+    }
+
+    .subject-btn span:not(.btn-icon) {
+      font-size: 1.2rem;
+      font-weight: 600;
+      text-shadow: 0 1px 0 rgba(255,255,255,0.8);
+    }
+
+    /* 3D hover lift + scale + stronger shadow */
+    .subject-btn:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 25px 30px -12px rgba(0, 60, 120, 0.35), 0 0 0 1px #3b82f6;
+      background: linear-gradient(145deg, #ffffff, #eef4ff);
+    }
+
+    .subject-btn:active {
+      transform: translateY(2px);
+      transition: 0.05s linear;
+    }
+
+    /* amazing active ripple simulation */
+    .subject-btn:active::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0px;
+      height: 0px;
+      background: rgba(59, 130, 246, 0.3);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      animation: ripple 0.4s ease-out;
+      pointer-events: none;
+    }
+
+    @keyframes ripple {
+      0% { width: 0px; height: 0px; opacity: 0.5; }
+      100% { width: 180px; height: 180px; opacity: 0; }
+    }
+
+    /* toast notification (elegant white/blue) */
+    .toast-message {
+      margin-top: 2.5rem;
+      text-align: center;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+      width: fit-content;
+      max-width: 90%;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 0.8rem 1.8rem;
+      border-radius: 60px;
+      color: #1e4a8a;
+      letter-spacing: 0.3px;
+      transition: all 0.25s ease;
+      border: 1px solid rgba(59, 130, 246, 0.5);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .toast-message span:first-child {
+      font-size: 1.3rem;
+    }
+
+    .hidden-toast {
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px);
+    }
+
+    /* Redirect helper text */
+    .soft-note {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #2c5282;
+      background: rgba(255,255,240,0.6);
+      width: fit-content;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 0.3rem 1.2rem;
+      border-radius: 50px;
+    }
+
+    /* responsive */
+    @media (max-width: 750px) {
+      .dashboard {
+        padding: 1.5rem;
+        border-radius: 2rem;
+      }
+      .button-grid {
+        gap: 1rem;
+      }
+      .subject-btn {
+        padding: 1rem 0.5rem;
+      }
+      .btn-icon {
+        font-size: 1.5rem;
+      }
+      .subject-btn span:not(.btn-icon) {
+        font-size: 0.95rem;
+      }
+      .header h1 {
+        font-size: 1.9rem;
+      }
+    }
+
+    @media (max-width: 500px) {
+      .subject-btn {
+        gap: 0.4rem;
+      }
+    }
+
+    /* focus-ring a11y */
+    .subject-btn:focus-visible {
+      outline: 3px solid #1e6bb8;
+      outline-offset: 3px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- 3D movable parallax background layers -->
+<div class="parallax-bg" id="parallaxBg">
+  <div class="layer layer-1"></div>
+  <div class="layer layer-2"></div>
+  <div class="layer layer-3"></div>
+  <div class="layer layer-4"></div>
+  <div class="layer layer-5"></div>
+</div>
+
+<div class="dashboard">
+  <div class="header">
+    <h1>🌊 3D Subject Studio</h1>
+    <p>white & blue · click any subject to continue ➜ login</p>
+  </div>
+
+  <div class="button-grid" id="subjectGrid">
+    <!-- 1. Maths -->
+    <button class="subject-btn" data-subject="Maths" data-icon="📐">
+      <span class="btn-icon">📐</span>
+      <span>Maths</span>
+    </button>
+    <!-- 2. Chemistry -->
+    <button class="subject-btn" data-subject="Chemistry" data-icon="⚗️">
+      <span class="btn-icon">⚗️</span>
+      <span>Chemistry</span>
+    </button>
+    <!-- 3. Biology -->
+    <button class="subject-btn" data-subject="Biology" data-icon="🧬">
+      <span class="btn-icon">🧬</span>
+      <span>Biology</span>
+    </button>
+    <!-- 4. Physics -->
+    <button class="subject-btn" data-subject="Physics" data-icon="⚛️">
+      <span class="btn-icon">⚛️</span>
+      <span>Physics</span>
+    </button>
+    <!-- 5. English -->
+    <button class="subject-btn" data-subject="English" data-icon="📖">
+      <span class="btn-icon">📖</span>
+      <span>English</span>
+    </button>
+    <!-- 6. Agriculture -->
+    <button class="subject-btn" data-subject="Agriculture" data-icon="🌾">
+      <span class="btn-icon">🌾</span>
+      <span>Agriculture</span>
+    </button>
+    <!-- 7. Afaan Oromoo -->
+    <button class="subject-btn" data-subject="Afaan Oromoo" data-icon="🗣️">
+      <span class="btn-icon">🗣️</span>
+      <span>Afaan Oromoo</span>
+    </button>
+    <!-- 8. IT (Information Technology) -->
+    <button class="subject-btn" data-subject="IT" data-icon="💻">
+      <span class="btn-icon">💻</span>
+      <span>IT</span>
+    </button>
+  </div>
+
+  <!-- elegant toast info -->
+  <div id="liveToast" class="toast-message hidden-toast">
+    <span>🔵</span>
+    <span id="toastText">Redirecting to login...</span>
+  </div>
+  <div class="soft-note">
+    ✨ each button will redirect to <strong>login.html</strong> ✨
+  </div>
+</div>
+
+<script>
+  (function() {
+    // ----- 3D MOVABLE BACKGROUND (mouse parallax) -----
+    const bgContainer = document.getElementById('parallaxBg');
+    const layers = document.querySelectorAll('.layer');
+    
+    // store initial positions for smoother parallax
+    let mouseX = 0, mouseY = 0;
+    let targetX = 0, targetY = 0;
+    
+    // gentle animation frame for smooth 3D movement
+    function updateParallax() {
+      // easing for buttery effect
+      targetX += (mouseX - targetX) * 0.08;
+      targetY += (mouseY - targetY) * 0.08;
+      
+      // move each layer with different depth intensity (creates 3D feel)
+      layers.forEach((layer, idx) => {
+        const depth = (idx + 1) * 0.025; // each layer shifts differently
+        const moveX = targetX * depth * 25;
+        const moveY = targetY * depth * 20;
+        layer.style.transform = `translate(${moveX}px, ${moveY}px)`;
+      });
+      requestAnimationFrame(updateParallax);
+    }
+    
+    // track mouse movement relative to window center
+    document.addEventListener('mousemove', (e) => {
+      // normalized values between -1 and 1
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      mouseX = (e.clientX / w) * 2 - 1;
+      mouseY = (e.clientY / h) * 2 - 1;
+    });
+    
+    // initialize parallax loop
+    updateParallax();
+    
+    // ----- REDIRECT TO login.html for all 8 subjects with cool toast + animation -----
+    const buttons = document.querySelectorAll('.subject-btn');
+    const toastDiv = document.getElementById('liveToast');
+    const toastTextSpan = document.getElementById('toastText');
+    let activeTimeout = null;
+    
+    // Helper: show temporary toast before redirect (smooth user feedback)
+    function showRedirectToast(subjectName, iconSymbol) {
+      if (activeTimeout) {
+        clearTimeout(activeTimeout);
+        toastDiv.classList.add('hidden-toast');
+      }
+      // custom message: "Maths ➜ login page"
+      toastTextSpan.innerHTML = `${iconSymbol}  ${subjectName}  ·  redirecting to login.html  🔐`;
+      toastDiv.classList.remove('hidden-toast');
+      
+      // hide toast after 1.2 seconds, but redirect will happen before if we set timeout? 
+      // We'll set redirect to happen just after showing, but keep toast visible for a moment.
+      // We schedule redirect after 180ms to ensure visually the toast appears.
+    }
+    
+    // actual redirect function to login.html (relative path)
+    function goToLogin(subject) {
+      // we can optionally pass subject as query param for future use
+      window.location.href = 'login.html';
+    }
+    
+    // add click event to each button: redirect to login.html, show toast and slight delay
+    buttons.forEach(btn => {
+      const subject = btn.getAttribute('data-subject');
+      const iconElem = btn.querySelector('.btn-icon');
+      let iconSymbol = '📘';
+      if (iconElem) {
+        iconSymbol = iconElem.innerText || iconElem.textContent;
+      }
+      
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        // Play micro-interaction: ripple effect via CSS already
+        // Add a tiny haptic for mobile
+        if (window.navigator && window.navigator.vibrate) {
+          window.navigator.vibrate(20);
+        }
+        
+        // show attractive toast with subject name
+        showRedirectToast(subject, iconSymbol);
+        
+        // slight delay to show the toast + feel premium before redirect (200ms)
+        setTimeout(() => {
+          goToLogin(subject);
+        }, 220);
+      });
+      
+      // optional: add title attribute
+      btn.title = `Click to access ${subject} → login required`;
+    });
+    
+    // welcome toast on load (optional, just for delight)
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        if (toastDiv) {
+          toastDiv.classList.remove('hidden-toast');
+          toastTextSpan.innerHTML = `🎓 8 subjects ready · click any to continue 🎓`;
+          if (activeTimeout) clearTimeout(activeTimeout);
+          activeTimeout = setTimeout(() => {
+            toastDiv.classList.add('hidden-toast');
+          }, 2500);
+        }
+      }, 400);
+    });
+    
+    // Reset toast if needed on any other interaction, but fine.
+  })();
+</script>
+</body>
+</html>

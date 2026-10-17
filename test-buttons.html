@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Teacher Portal</title>
+    <style>
+        body { font-family: Arial; padding: 40px; background: linear-gradient(135deg, #1e3c72, #2a5298); }
+        .card { background: white; max-width: 400px; margin: 0 auto; padding: 30px; border-radius: 20px; }
+        button { width: 100%; padding: 12px; margin-top: 10px; background: #2a5298; color: white; border: none; border-radius: 10px; cursor: pointer; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 10px; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 10px; display: none; }
+        .error { background: #fee; color: #c00; display: block; }
+        .success { background: #d4edda; color: #155724; display: block; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>🔐 Teacher Sign Up Test</h2>
+        <div id="status" class="status"></div>
+        
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="password" placeholder="Password">
+        <input type="password" id="confirm" placeholder="Confirm Password">
+        <input type="password" id="adminPass" placeholder="Admin Password (first time)">
+        
+        <button onclick="testSignUp()">Create Account</button>
+        <button onclick="testAlert()" style="background: #6b7280; margin-top: 5px;">Test Button (Click me)</button>
+    </div>
+
+    <script>
+        // Simple test function
+        function testAlert() {
+            alert('Button is working! JavaScript is running!');
+        }
+        
+        // Sign up test function
+        async function testSignUp() {
+            const status = document.getElementById('status');
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirm = document.getElementById('confirm').value;
+            const adminPass = document.getElementById('adminPass').value;
+            
+            status.style.display = 'block';
+            status.className = 'status';
+            
+            if (!email || !password) {
+                status.textContent = '❌ Please fill email and password';
+                status.className = 'status error';
+                return;
+            }
+            
+            if (password !== confirm) {
+                status.textContent = '❌ Passwords do not match';
+                status.className = 'status error';
+                return;
+            }
+            
+            if (password.length < 6) {
+                status.textContent = '❌ Password must be at least 6 characters';
+                status.className = 'status error';
+                return;
+            }
+            
+            // Check admin password
+            if (adminPass !== 'admin123') {
+                status.textContent = '❌ Invalid admin master password';
+                status.className = 'status error';
+                return;
+            }
+            
+            status.textContent = '✅ Validation passed! Account would be created.';
+            status.className = 'status success';
+            
+            // Here you would connect to Firebase
+            console.log('Email:', email);
+            console.log('Password:', password);
+        }
+        
+        console.log('Test page loaded - buttons should work!');
+    </script>
+</body>
+</html>
