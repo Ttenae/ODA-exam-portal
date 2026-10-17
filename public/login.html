@@ -3,490 +3,536 @@
 <head>
     <meta charset="UTF-8">
     <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#1e3c72">
+    <meta name="theme-color" content="#0a1020">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <meta name="robots" content="noindex, nofollow">
     <title>3D Student Portal | Sign Up & Login</title>
     <link rel="icon" type="image/svg+xml" href="/oda.svg">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chart.js for Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --primary: #1b2a6b;
+            --primary-light: #2a3f9e;
+            --accent: #4f46e5;
+            --teal: #2dd4bf;
+            --gold: #fbbf24;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg-glass: rgba(255, 255, 255, 0.97);
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e5e8f0;
+            --ink: #070c1a;
+            --font-display: 'Bricolage Grotesque', 'Manrope', sans-serif;
+            --font-body: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Poppins', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #0a0a2a, #1a1a4a);
+            font-family: var(--font-body);
+            background: var(--ink);
             min-height: 100vh;
             overflow-y: auto;
             overflow-x: hidden;
             position: relative;
+            color: var(--text-main);
+            -webkit-font-smoothing: antialiased;
         }
 
-        #canvas-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            pointer-events: none;
-        }
+        button:focus-visible, input:focus-visible { outline: 3px solid var(--teal); outline-offset: 2px; }
 
-        canvas {
-            display: block;
-            width: 100%;
-            height: 100%;
+        /* ---------- Background ---------- */
+        .bg-shapes {
+            position: fixed; inset: 0; z-index: 0; overflow: hidden;
+            background:
+                radial-gradient(1200px 600px at 10% -10%, #1a2370 0%, transparent 60%),
+                radial-gradient(900px 600px at 100% 110%, #0c4a5a 0%, transparent 60%),
+                var(--ink);
         }
+        .shape { position: absolute; filter: blur(110px); border-radius: 50%; animation: float 26s infinite ease-in-out; opacity: .45; }
+        .shape-1 { top: -12%; left: -8%; width: 520px; height: 520px; background: #3b36c9; }
+        .shape-2 { bottom: -14%; right: -8%; width: 460px; height: 460px; background: #0ea5a4; animation-delay: -8s; }
+        .shape-3 { top: 42%; left: 58%; width: 260px; height: 260px; background: #f59e0b; opacity: .18; animation-delay: -14s; }
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -40px) scale(1.08); }
+            66% { transform: translate(-24px, 24px) scale(.94); }
+        }
+        #canvas-container { position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: .35; }
 
         .content-wrapper {
-            position: relative;
-            z-index: 10;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: relative; z-index: 10; min-height: 100vh;
+            display: flex; align-items: center; justify-content: center;
             padding: 40px 20px;
         }
 
-        .auth-container {
-            width: 100%;
-            max-width: 480px;
-            margin: 0 auto;
+        /* ---------- Auth ---------- */
+        .auth-container { width: 100%; max-width: 1040px; margin: 0 auto; }
+
+        .auth-shell {
+            display: grid;
+            grid-template-columns: 1.05fr 1fr;
+            border-radius: 36px;
+            overflow: hidden;
+            background: rgba(255,255,255,.04);
+            border: 1px solid rgba(255,255,255,.12);
+            box-shadow: 0 40px 90px -20px rgba(0,0,0,.65);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            animation: rise .8s cubic-bezier(.16,1,.3,1);
+        }
+        @keyframes rise { from { opacity: 0; transform: translateY(32px); } to { opacity: 1; transform: none; } }
+
+        .brand-panel {
+            padding: 56px 48px;
+            color: #fff;
+            display: flex; flex-direction: column; justify-content: space-between; gap: 40px;
+            position: relative;
+            background: linear-gradient(160deg, rgba(79,70,229,.35), rgba(13,148,136,.18) 70%, transparent);
+        }
+        .brand-mark {
+            width: 54px; height: 54px; border-radius: 18px;
+            display: grid; place-items: center; font-size: 26px;
+            background: linear-gradient(135deg, var(--gold), #f97316);
+            box-shadow: 0 12px 30px -8px rgba(251,191,36,.6);
+        }
+        .brand-panel h2 {
+            font-family: var(--font-display);
+            font-size: clamp(34px, 4.2vw, 50px);
+            line-height: 1.04; letter-spacing: -1.5px; font-weight: 800;
+            margin: 26px 0 16px;
+        }
+        .brand-panel > div > p { color: rgba(255,255,255,.72); font-size: 15.5px; line-height: 1.6; max-width: 36ch; }
+        .brand-points { list-style: none; display: grid; gap: 14px; }
+        .brand-points li {
+            display: flex; align-items: center; gap: 14px;
+            font-size: 14px; font-weight: 600; color: rgba(255,255,255,.9);
+        }
+        .brand-points span {
+            width: 38px; height: 38px; flex: none; border-radius: 12px; display: grid; place-items: center; font-size: 17px;
+            background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.14);
         }
 
         .auth-card {
-            background: rgba(255, 255, 255, 0.97);
-            backdrop-filter: blur(10px);
-            border-radius: 30px;
-            padding: 40px 35px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            animation: floatIn 0.8s cubic-bezier(0.34, 1.2, 0.64, 1);
+            background: var(--bg-glass);
+            padding: 48px 42px;
+            display: flex; flex-direction: column; justify-content: center;
         }
 
-        @keyframes floatIn {
-            from { opacity: 0; transform: translateY(50px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        .logo {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
+        .logo { margin-bottom: 28px; }
         .logo h1 {
-            font-size: 32px;
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            font-weight: 700;
+            font-family: var(--font-display);
+            font-size: 30px; font-weight: 800; letter-spacing: -.8px; color: var(--ink);
+        }
+        .logo p { color: var(--text-muted); font-size: 14px; margin-top: 6px; font-weight: 500; }
+
+        .login-type-selector, .tab-buttons {
+            display: flex; gap: 6px; background: #eef0f6; border-radius: 16px; padding: 5px;
+        }
+        .login-type-selector { margin-bottom: 14px; }
+        .tab-buttons { margin-bottom: 26px; }
+
+        .login-type-btn, .tab-btn {
+            flex: 1; border: none; background: transparent; cursor: pointer;
+            font-family: inherit; color: var(--text-muted); border-radius: 12px;
+            transition: background .25s, color .25s, box-shadow .25s;
+        }
+        .login-type-btn { padding: 11px 8px; font-size: 13px; font-weight: 700; }
+        .tab-btn { padding: 12px; font-size: 15px; font-weight: 800; }
+        .login-type-btn.active, .tab-btn.active {
+            background: #fff; color: var(--ink);
+            box-shadow: 0 4px 12px -2px rgba(15,23,42,.14);
         }
 
-        .logo p {
-            color: #6b7280;
-            font-size: 14px;
-            margin-top: 8px;
-        }
-
-        .login-type-selector {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 25px;
-            background: #f3f4f6;
-            border-radius: 50px;
-            padding: 5px;
-        }
-
-        .login-type-btn {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            border-radius: 40px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: transparent;
-            color: #6b7280;
-        }
-
-        .login-type-btn.active {
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
-            color: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .tab-buttons {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 25px;
-            border-bottom: 2px solid #e5e7eb;
-        }
-
-        .tab-btn {
-            flex: 1;
-            background: none;
-            border: none;
-            padding: 12px;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-            color: #9ca3af;
-            transition: all 0.3s ease;
-        }
-
-        .tab-btn.active {
-            color: #2a5298;
-            border-bottom: 3px solid #2a5298;
-        }
-
-        .form-group {
-            margin-bottom: 22px;
-            position: relative;
-        }
-
+        .form-group { margin-bottom: 18px; position: relative; }
         .form-group input {
-            width: 100%;
-            padding: 15px 18px;
-            border: 2px solid #e5e7eb;
-            border-radius: 16px;
-            font-size: 15px;
-            transition: all 0.3s ease;
-            background: white;
-            box-sizing: border-box;
+            width: 100%; padding: 17px 18px;
+            border: 2px solid var(--border-color); border-radius: 16px;
+            font-size: 15px; font-weight: 600; font-family: inherit;
+            background: #fff; color: var(--text-main);
+            transition: border-color .25s, box-shadow .25s;
         }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #2a5298;
-            box-shadow: 0 0 0 4px rgba(42, 82, 152, 0.1);
-        }
-
+        .form-group input:hover { border-color: #cfd4e4; }
+        .form-group input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 5px rgba(79,70,229,.12); }
         .form-group label {
-            position: absolute;
-            left: 18px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: white;
-            padding: 0 6px;
-            color: #9ca3af;
-            transition: all 0.3s ease;
-            pointer-events: none;
-            font-size: 15px;
+            position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+            background: #fff; padding: 0 8px; color: var(--text-muted);
+            transition: all .2s ease; pointer-events: none; font-size: 15px; font-weight: 500;
         }
-
         .form-group input:focus ~ label,
         .form-group input:not(:placeholder-shown) ~ label {
-            top: 0;
-            font-size: 11px;
-            color: #2a5298;
-            font-weight: 600;
+            top: 0; font-size: 12px; color: var(--accent); font-weight: 800;
         }
 
         .auth-btn {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
-            color: white;
-            border: none;
-            border-radius: 16px;
-            font-size: 17px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 5px;
+            width: 100%; padding: 17px; margin-top: 8px;
+            color: #fff; border: none; border-radius: 16px; cursor: pointer;
+            font-size: 16px; font-weight: 800; font-family: inherit; letter-spacing: .2px;
+            background: linear-gradient(120deg, #4338ca 0%, #4f46e5 45%, #0d9488 100%);
+            background-size: 160% 100%;
+            box-shadow: 0 16px 30px -10px rgba(79,70,229,.6);
+            transition: transform .25s, box-shadow .25s, background-position .5s;
         }
+        .auth-btn:hover:not(:disabled) { transform: translateY(-2px); background-position: 100% 0; box-shadow: 0 20px 36px -10px rgba(79,70,229,.7); }
+        .auth-btn:active:not(:disabled) { transform: translateY(0); }
+        .auth-btn:disabled { opacity: .7; cursor: not-allowed; }
 
-        .auth-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px -5px rgba(42, 82, 152, 0.4);
-        }
-
-        .auth-btn:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-        }
+        #installAppBtn:hover { background: #e6e9f5 !important; border-color: var(--accent) !important; }
 
         .message {
-            padding: 12px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            text-align: center;
-            font-size: 13px;
-            display: none;
-            font-weight: 500;
+            padding: 13px 14px; border-radius: 14px; margin-bottom: 18px;
+            text-align: center; font-size: 13px; display: none; font-weight: 700;
+            animation: shake .4s ease;
         }
-
-        .error-message { background: #fef2f2; color: #dc2626; border-left: 4px solid #dc2626; }
-        .success-message { background: #f0fdf4; color: #16a34a; border-left: 4px solid #16a34a; }
-        .info-message { background: #eff6ff; color: #2563eb; border-left: 4px solid #2563eb; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+        .error-message { background: #fef2f2; color: var(--danger); border: 1px solid #fecaca; }
+        .success-message { background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
+        .info-message { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
 
         .loading-spinner {
-            display: inline-block;
-            width: 18px;
-            height: 18px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 0.6s linear infinite;
-            margin-right: 8px;
-            vertical-align: middle;
+            display: inline-block; width: 18px; height: 18px;
+            border: 2px solid rgba(255,255,255,.3); border-radius: 50%; border-top-color: #fff;
+            animation: spin .6s linear infinite; margin-right: 8px; vertical-align: middle;
         }
-
         @keyframes spin { to { transform: rotate(360deg); } }
 
+        /* ---------- Dashboard ---------- */
         .dashboard-container {
-            width: 100%;
-            max-width: 550px;
-            margin: 0 auto;
+            width: 100%; max-width: 1060px; margin: 0 auto; display: none;
+            animation: rise .7s cubic-bezier(.16,1,.3,1);
         }
 
-        .dashboard-card {
-            background: rgba(255, 255, 255, 0.97);
-            backdrop-filter: blur(10px);
-            border-radius: 30px;
-            padding: 45px 40px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            text-align: center;
+        .dash-card {
+            background: var(--bg-glass);
+            border-radius: 28px; padding: 30px;
+            box-shadow: 0 24px 50px -20px rgba(0,0,0,.55);
+            margin-bottom: 22px;
         }
 
-        .dashboard-card h2 {
-            color: #1e3c72;
-            margin-bottom: 20px;
-            font-size: 28px;
+        .dash-card.hero {
+            color: #fff; padding: 36px;
+            background:
+                radial-gradient(600px 260px at 90% -20%, rgba(45,212,191,.35), transparent 70%),
+                radial-gradient(500px 300px at 0% 120%, rgba(79,70,229,.55), transparent 70%),
+                linear-gradient(135deg, #131c4d, #0c1233);
+            border: 1px solid rgba(255,255,255,.12);
+        }
+        .hero-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; flex-wrap: wrap; margin-bottom: 30px; }
+        .hero .dash-header { margin: 0; display: block; }
+        .dash-header h2 {
+            font-family: var(--font-display);
+            font-size: clamp(28px, 4vw, 40px); font-weight: 800; letter-spacing: -1.2px; line-height: 1.1;
+            color: #fff; margin-bottom: 14px;
+        }
+        .chips { display: flex; gap: 10px; flex-wrap: wrap; }
+        .chip {
+            font-size: 13px; font-weight: 600; color: rgba(255,255,255,.75);
+            background: rgba(255,255,255,.09); border: 1px solid rgba(255,255,255,.14);
+            padding: 8px 14px; border-radius: 999px;
+        }
+        .chip span { color: #fff; font-weight: 800; }
+
+        .action-buttons { display: flex; gap: 10px; margin: 0; }
+        .print-btn, .logout-btn {
+            padding: 12px 20px; border: none; border-radius: 14px; cursor: pointer;
+            font-size: 14px; font-weight: 800; font-family: inherit;
+            transition: transform .25s, background .25s;
+        }
+        .print-btn { background: linear-gradient(135deg, var(--teal), #14b8a6); color: #052e2b; }
+        .logout-btn { background: rgba(255,255,255,.1); color: #fff; border: 1px solid rgba(255,255,255,.2); }
+        .print-btn:hover, .logout-btn:hover { transform: translateY(-2px); }
+        .logout-btn:hover { background: rgba(239,68,68,.25); }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+        .stat-card {
+            background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12);
+            border-radius: 20px; padding: 20px; transition: background .25s, border-color .25s;
+        }
+        .stat-card:hover { background: rgba(255,255,255,.12); border-color: rgba(45,212,191,.6); }
+        .stat-card h4 { font-size: 13px; color: rgba(255,255,255,.65); margin-bottom: 10px; font-weight: 600; }
+        .stat-card h3 { font-family: var(--font-display); font-size: 32px; color: #fff; font-weight: 800; letter-spacing: -1px; }
+        .stat-card:nth-child(2) h3 { color: var(--gold); }
+        .stat-card:nth-child(4) h3 { color: var(--teal); }
+
+        .dash-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 22px; align-items: start; }
+        .dash-grid .dash-card { margin-bottom: 0; }
+        .dash-card h3.section-title {
+            font-family: var(--font-display); color: var(--ink);
+            font-size: 21px; font-weight: 800; letter-spacing: -.5px; margin-bottom: 18px;
         }
 
-        .info-box {
-            background: #f3f4f6;
-            padding: 15px;
-            border-radius: 15px;
-            margin: 20px 0;
-            text-align: left;
+        .chart-wrapper {
+            position: relative; height: 280px; width: 100%;
+            background: #f7f8fc; padding: 16px; border-radius: 20px; border: 1px solid var(--border-color);
         }
 
-        .info-box p {
-            color: #4b5563;
-            margin: 10px 0;
-            font-size: 15px;
+        .recent-exams-list { display: flex; flex-direction: column; gap: 10px; max-height: 420px; overflow-y: auto; padding-right: 4px; }
+        .recent-exam-item {
+            display: flex; justify-content: space-between; align-items: center; gap: 12px;
+            background: #f7f8fc; padding: 16px 18px; border-radius: 18px;
+            border: 1px solid transparent; cursor: pointer;
+            transition: background .2s, border-color .2s, transform .2s;
+        }
+        .recent-exam-item:hover { background: #fff; border-color: var(--accent); transform: translateX(4px); box-shadow: 0 10px 24px -12px rgba(79,70,229,.45); }
+        .recent-exam-item h4 { color: var(--ink); font-size: 15.5px; font-weight: 800; margin-bottom: 3px; }
+        .recent-exam-item p { color: var(--text-muted); font-size: 13px; font-weight: 500; }
+        .grade-badge {
+            flex: none; background: linear-gradient(135deg, #fef3c7, #fde68a); color: #92400e;
+            padding: 8px 14px; border-radius: 12px; font-weight: 800; font-size: 14px;
         }
 
-        .exam-btn, .logout-btn {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 10px;
-        }
-
-        .exam-btn { background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; }
-        .exam-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 25px -5px rgba(42, 82, 152, 0.4); }
-        .logout-btn { background: #dc2626; color: white; }
-        .logout-btn:hover { background: #b91c1c; transform: translateY(-2px); }
-
+        /* ---------- Modal ---------- */
         .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            z-index: 1000;
-            overflow-y: auto;
-            backdrop-filter: blur(5px);
+            display: none; position: fixed; inset: 0; z-index: 1000; overflow-y: auto; padding: 20px;
+            background: rgba(5,8,20,.78); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
         }
-
         .modal-content {
-            background: white;
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 30px;
-            border-radius: 20px;
-            animation: modalSlideIn 0.3s ease;
+            background: #fff; max-width: 780px; margin: 40px auto; padding: 38px;
+            border-radius: 28px; box-shadow: 0 30px 70px -15px rgba(0,0,0,.6);
+            animation: rise .4s ease;
         }
-
-        @keyframes modalSlideIn {
-            from { opacity: 0; transform: translateY(-50px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
         .exam-card {
-            background: #f3f4f6;
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            cursor: pointer;
-            transition: transform 0.2s;
+            background: #f7f8fc; padding: 20px; border-radius: 16px; margin-bottom: 14px;
+            cursor: pointer; transition: all .2s; border: 1px solid var(--border-color);
         }
-
-        .exam-card:hover { transform: translateX(5px); background: #e5e7eb; }
-
-        .question-card { padding: 15px; border-radius: 10px; margin-bottom: 15px; }
-        .question-card.correct { background: #e8f5e9; border-left: 4px solid #4caf50; }
-        .question-card.incorrect { background: #ffebee; border-left: 4px solid #f44336; }
-
+        .exam-card:hover { transform: translateX(5px); border-color: var(--accent); }
+        .question-card { padding: 18px 20px; border-radius: 16px; margin-bottom: 14px; line-height: 1.5; }
+        .question-card.correct { background: #ecfdf5; border-left: 6px solid var(--success); }
+        .question-card.incorrect { background: #fef2f2; border-left: 6px solid var(--danger); }
         .back-btn {
-            background: #6b7280;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-bottom: 20px;
+            background: #e5e8f0; color: var(--text-main); border: none; padding: 10px 20px;
+            border-radius: 12px; cursor: pointer; margin-bottom: 20px; font-weight: 700; font-family: inherit;
         }
-
-        .back-btn:hover { background: #4b5563; }
-
+        .back-btn:hover { background: #d3d8e6; }
         .close-modal {
-            background: #2a5298;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 10px;
-            cursor: pointer;
-            margin-top: 20px;
+            background: var(--ink); color: #fff; border: none; padding: 16px; border-radius: 16px;
+            cursor: pointer; margin-top: 24px; width: 100%; font-weight: 800; font-size: 16px;
+            font-family: inherit; transition: background .25s;
         }
+        .close-modal:hover { background: var(--accent); }
 
-        .close-modal:hover { background: #1e3c72; }
-
-        .footer {
-            text-align: center;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(0,0,0,0.1);
-            font-size: 12px;
-            color: #6b7280;
-        }
-
+        .footer { text-align: center; margin-top: 8px; font-size: 13px; color: rgba(255,255,255,.55); font-weight: 600; }
         .no-results-icon { font-size: 64px; text-align: center; margin: 20px 0; }
 
-        @media (max-width: 600px) {
-            .auth-card, .dashboard-card { padding: 30px 25px; }
-            .logo h1 { font-size: 26px; }
-            .modal-content { margin: 20px; padding: 20px; }
-            .content-wrapper { padding: 20px; }
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #0a1020; }
+        ::-webkit-scrollbar-thumb { background: #2b3556; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #3d4a77; }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 900px) {
+            .auth-shell { grid-template-columns: 1fr; max-width: 480px; margin: 0 auto; }
+            .brand-panel { padding: 28px 30px; gap: 18px; }
+            .brand-panel h2 { font-size: 28px; margin: 14px 0 0; }
+            .brand-panel > div > p, .brand-points { display: none; }
+            .brand-mark { width: 44px; height: 44px; font-size: 22px; border-radius: 14px; }
+            .dash-grid { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 480px) {
+            .content-wrapper { padding: 20px 12px; }
+            .auth-card { padding: 32px 22px; }
+            .dash-card, .dash-card.hero { padding: 22px; border-radius: 24px; }
+            .modal-content { padding: 24px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation: none !important; transition: none !important; }
         }
 
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.1); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb { background: #2a5298; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #1e3c72; }
+        /* Print Styles for PDF */
+        @media print {
+            body { background: white; padding: 0; }
+            .bg-shapes, #canvas-container, .auth-container, .action-buttons, .modal { display: none !important; }
+            .content-wrapper { padding: 0; display: block; }
+            .dashboard-container { display: block !important; max-width: 100%; }
+            .dash-card, .dash-card.hero { box-shadow: none; border: 2px solid #e5e7eb; break-inside: avoid; padding: 20px; background: #fff; color: #000; }
+            .dash-grid { display: block; }
+            .dash-grid .dash-card { margin-bottom: 22px; }
+            .chart-wrapper { display: none; }
+            .dash-header h2, .stat-card h3, .stat-card h4, .chip, .chip span { color: #000 !important; }
+            .stat-card { border: 2px solid #e5e7eb; background: #fff; }
+            .recent-exam-item { border: 1px solid #e5e7eb; }
+            .recent-exams-list { max-height: none; overflow: visible; }
+        }
     </style>
 </head>
 <body>
+    <!-- Premium Animated Background -->
+    <div class="bg-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
     <div id="canvas-container"></div>
 
     <div class="content-wrapper">
+        <!-- LOGIN/SIGNUP CONTAINER -->
         <div class="auth-container" id="authContainer">
-            <div class="auth-card">
-                <div class="logo">
-                    <h1>📚 Student Portal</h1>
-                    <p>Sign up or login to access your results</p>
-                </div>
-                
-                <div class="login-type-selector">
-                    <button class="login-type-btn active" id="usernameLoginBtn" onclick="switchLoginType('username')">🔑 Username Login</button>
-                    <button class="login-type-btn" id="nameLoginBtn" onclick="switchLoginType('name')">👤 Name Login (Grade 12)</button>
-                </div>
-                
-                <div id="messageBox" class="message"></div>
-                
-                <div class="tab-buttons">
-                    <button class="tab-btn" id="loginTabBtn" onclick="switchTab('login')">Login</button>
-                    <button class="tab-btn active" id="signupTabBtn" onclick="switchTab('signup')">Sign Up</button>
-                </div>
-                
-                <form id="loginForm" style="display: none;">
-                    <div id="usernameLoginFields">
-                        <div class="form-group">
-                            <input type="text" id="loginUsername" placeholder=" " autocomplete="off">
-                            <label>Username</label>
-                        </div>
+            <div class="auth-shell">
+                <aside class="brand-panel">
+                    <div>
+                        <div class="brand-mark">🎓</div>
+                        <h2>Your results, all in one place.</h2>
+                        <p>See every exam score, track your subject averages and review each answer with your teacher's corrections.</p>
                     </div>
-                    <div id="nameLoginFields" style="display: none;">
-                        <div class="form-group">
-                            <input type="text" id="loginFirstName" placeholder=" " autocomplete="off">
-                            <label>First Name</label>
-                        </div>
-                        <div class="form-group">
-                            <input type="text" id="loginLastName" placeholder=" " autocomplete="off">
-                            <label>Last Name</label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <input type="password" id="loginPassword" placeholder=" " autocomplete="off">
-                        <label>Password</label>
-                    </div>
-                    <button type="submit" class="auth-btn" id="loginBtn">Sign In →</button>
-                </form>
-                
-                <form id="signupForm" style="display: block;">
-                    <div id="signupUsernameFields">
-                        <div class="form-group">
-                            <input type="text" id="signupUsername" placeholder=" " autocomplete="off">
-                            <label>Username (from school records)</label>
-                        </div>
-                    </div>
-                    <div id="signupNameFields" style="display: none;">
-                        <div class="form-group">
-                            <input type="text" id="signupFirstName" placeholder=" " autocomplete="off">
-                            <label>First Name</label>
-                        </div>
-                        <div class="form-group">
-                            <input type="text" id="signupLastName" placeholder=" " autocomplete="off">
-                            <label>Last Name</label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <input type="password" id="signupTempPassword" placeholder=" " autocomplete="off">
-                        <label>Temporary Password (from teacher)</label>
-                    </div>
-                    <div class="form-group">
-                        <input type="password" id="signupNewPassword" placeholder=" " autocomplete="off">
-                        <label>Create Your New Password</label>
-                    </div>
-                    <div class="form-group">
-                        <input type="password" id="signupConfirmPassword" placeholder=" " autocomplete="off">
-                        <label>Confirm New Password</label>
-                    </div>
-                    <button type="submit" class="auth-btn" id="signupBtn">Create Account →</button>
-                </form>
+                    <ul class="brand-points">
+                        <li><span>📊</span> Subject averages at a glance</li>
+                        <li><span>📝</span> Question-by-question review</li>
+                        <li><span>🖨️</span> Save your report as PDF</li>
+                    </ul>
+                </aside>
 
-                <!-- 📥 PWA INSTALL BUTTON (Forced Visible for Testing) -->
-                <button id="installAppBtn" style="display: block; width: 100%; padding: 14px; background: #10b981; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 15px; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);">
-                    📥 Download & Install App
-                </button>
+                <div class="auth-card">
+                    <div class="logo">
+                        <h1>📚 ODA Portal</h1>
+                        <p>Sign up or login to access your results</p>
+                    </div>
+
+                    <div class="login-type-selector">
+                        <button class="login-type-btn active" id="usernameLoginBtn" onclick="switchLoginType('username')">🔑 Username</button>
+                        <button class="login-type-btn" id="nameLoginBtn" onclick="switchLoginType('name')">👤 Name (Grade 12)</button>
+                    </div>
+
+                    <div id="messageBox" class="message"></div>
+
+                    <div class="tab-buttons">
+                        <button class="tab-btn" id="loginTabBtn" onclick="switchTab('login')">Login</button>
+                        <button class="tab-btn active" id="signupTabBtn" onclick="switchTab('signup')">Sign Up</button>
+                    </div>
+
+                    <form id="loginForm" style="display: none;">
+                        <div id="usernameLoginFields">
+                            <div class="form-group">
+                                <input type="text" id="loginUsername" placeholder=" " autocomplete="off">
+                                <label>Username</label>
+                            </div>
+                        </div>
+                        <div id="nameLoginFields" style="display: none;">
+                            <div class="form-group">
+                                <input type="text" id="loginFirstName" placeholder=" " autocomplete="off">
+                                <label>First Name</label>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" id="loginLastName" placeholder=" " autocomplete="off">
+                                <label>Last Name</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="loginPassword" placeholder=" " autocomplete="off">
+                            <label>Password</label>
+                        </div>
+                        <button type="submit" class="auth-btn" id="loginBtn">Sign In →</button>
+                    </form>
+
+                    <form id="signupForm" style="display: block;">
+                        <div id="signupUsernameFields">
+                            <div class="form-group">
+                                <input type="text" id="signupUsername" placeholder=" " autocomplete="off">
+                                <label>Username</label>
+                            </div>
+                        </div>
+                        <div id="signupNameFields" style="display: none;">
+                            <div class="form-group">
+                                <input type="text" id="signupFirstName" placeholder=" " autocomplete="off">
+                                <label>First Name</label>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" id="signupLastName" placeholder=" " autocomplete="off">
+                                <label>Last Name</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="signupTempPassword" placeholder=" " autocomplete="off">
+                            <label>Temp Password</label>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="signupNewPassword" placeholder=" " autocomplete="off">
+                            <label>New Password</label>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="signupConfirmPassword" placeholder=" " autocomplete="off">
+                            <label>Confirm Password</label>
+                        </div>
+                        <button type="submit" class="auth-btn" id="signupBtn">Create Account →</button>
+                    </form>
+
+                    <button id="installAppBtn" style="display: block; width: 100%; padding: 15px; background: #f1f3fa; color: var(--primary); border: 2px solid var(--border-color); border-radius: 16px; font-size: 15px; font-weight: 800; cursor: pointer; margin-top: 14px; transition: all 0.3s; font-family: inherit;">
+                        📥 Install Mobile App
+                    </button>
+                </div>
             </div>
         </div>
 
-        <div class="dashboard-container" id="dashboardContainer" style="display: none;">
-            <div class="dashboard-card">
-                <h2>Welcome, <span id="studentName">Student</span>! 👋</h2>
-                <div class="info-box">
-                    <p>📋 <strong>Student ID:</strong> <span id="studentId">-</span></p>
-                    <p>📚 <strong>Class:</strong> <span id="studentClass">-</span></p>
-                    <p>👤 <strong>Name:</strong> <span id="studentFullName">-</span></p>
+        <!-- PREMIUM DASHBOARD CONTAINER -->
+        <div class="dashboard-container" id="dashboardContainer">
+            <div class="dash-card hero">
+                <div class="hero-top">
+                    <div class="dash-header">
+                        <h2>Welcome, <span id="studentName">Student</span>! 👋</h2>
+                        <div class="chips">
+                            <div class="chip">📋 ID: <span id="studentId">-</span></div>
+                            <div class="chip">📚 Class: <span id="studentClass">-</span></div>
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="print-btn" onclick="window.print()">🖨️ Save as PDF</button>
+                        <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+                    </div>
                 </div>
-                <button class="exam-btn" onclick="showResults()">📊 View My Exam Results</button>
-                <button class="logout-btn" onclick="logout()">🚪 Logout</button>
-                <div class="footer">
-                    <p>© 2026 Tesfaye Tilahun | All Rights Reserved</p>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h4>Overall average</h4>
+                        <h3 id="overallAvg">0%</h3>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Highest score</h4>
+                        <h3 id="highestScore">0%</h3>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Total exams</h4>
+                        <h3 id="totalExams">0</h3>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Best subject</h4>
+                        <h3 id="bestSubject" style="font-size: 22px; padding-top: 6px;">N/A</h3>
+                    </div>
                 </div>
+            </div>
+
+            <div class="dash-grid">
+                <div class="dash-card">
+                    <h3 class="section-title">📈 Performance by subject</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="dash-card">
+                    <h3 class="section-title">📚 Recent exam results</h3>
+                    <div id="recentExamsList" class="recent-exams-list">
+                        <div class="loading-spinner" style="border-color: #e2e8f0; border-top-color: var(--accent); margin: 0 auto;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer">
+                <p>© 2026 Tesfaye Tilahun | All Rights Reserved</p>
             </div>
         </div>
     </div>
 
     <div id="resultsModal" class="modal">
         <div class="modal-content">
-            <div id="resultsContent"><div class="loading-spinner"></div> Loading...</div>
+            <div id="resultsContent"><div class="loading-spinner" style="border-color: #e2e8f0; border-top-color: var(--accent);"></div> Loading...</div>
             <button class="close-modal" onclick="closeResults()">Close</button>
         </div>
     </div>
@@ -517,6 +563,7 @@
         
         let currentUser = null;
         let currentLoginType = 'username';
+        let myChart = null;
         
         function showMessage(message, type = 'error') {
             messageBox.textContent = message;
@@ -760,10 +807,11 @@
                 document.getElementById('studentName').textContent = currentUser.fullName || identifier1;
                 document.getElementById('studentId').textContent = currentUser.studentId;
                 document.getElementById('studentClass').textContent = currentUser.class;
-                document.getElementById('studentFullName').textContent = currentUser.fullName || `${currentUser.firstName || ''} ${currentUser.lastName || ''}`.trim() || identifier1;
                 
                 authContainer.style.display = 'none';
                 dashboardContainer.style.display = 'block';
+                
+                loadDashboardData(currentUser);
                 
                 showMessage(`Welcome ${currentUser.fullName || identifier1}!`, 'success');
                 setLoading(false, 'login');
@@ -778,6 +826,7 @@
         }
         
         window.logout = function() {
+            if (myChart) { myChart.destroy(); myChart = null; }
             currentUser = null;
             authContainer.style.display = 'block';
             dashboardContainer.style.display = 'none';
@@ -798,58 +847,127 @@
             switchLoginType('username');
         };
         
-        window.showResults = async function() {
-            const resultsModal = document.getElementById('resultsModal');
-            const resultsContent = document.getElementById('resultsContent');
-            
-            resultsModal.style.display = 'block';
-            resultsContent.innerHTML = '<div class="loading-spinner"></div> Loading your results...';
-            
+        async function loadDashboardData(user) {
             try {
-                if (!currentUser) { resultsContent.innerHTML = '<p>❌ Please login again.</p>'; return; }
-                
                 let resultsQuery;
-                if (currentUser.username) {
-                    resultsQuery = query(collection(db, 'results'), where('studentUsername', '==', currentUser.username));
-                } else if (currentUser.firstName && currentUser.lastName) {
-                    resultsQuery = query(collection(db, 'results'), where('studentFirstName', '==', currentUser.firstName), where('studentLastName', '==', currentUser.lastName));
+                if (user.username) {
+                    resultsQuery = query(collection(db, 'results'), where('studentUsername', '==', user.username));
+                } else if (user.firstName && user.lastName) {
+                    resultsQuery = query(collection(db, 'results'), where('studentFirstName', '==', user.firstName), where('studentLastName', '==', user.lastName));
                 } else {
-                    resultsContent.innerHTML = '<p>❌ Unable to fetch results. Missing student information.</p>';
                     return;
                 }
+
+                const snapshot = await getDocs(resultsQuery);
+                const recentList = document.getElementById('recentExamsList');
                 
-                const resultsSnapshot = await getDocs(resultsQuery);
-                
-                if (resultsSnapshot.empty) {
-                    resultsContent.innerHTML = `<div class="no-results-icon">📭</div><h3>No Results Available Yet</h3><p>Your exam results haven't been uploaded yet.</p>`;
+                if (snapshot.empty) {
+                    recentList.innerHTML = '<p style="text-align:center; color:#6b7280; padding: 20px;">No exam results found.</p>';
                     return;
                 }
+
+                const subjectData = {};
+                let totalScore = 0;
+                let count = 0;
+                let highestScore = 0;
+                let bestSubject = 'N/A';
                 
-                let html = '<h2>📊 Your Exam Results</h2>';
-                for (const docSnap of resultsSnapshot.docs) {
-                    const exam = docSnap.data();
-                    let gradeDisplay = '';
-                    if (exam.originalGrade && exam.originalMaxScore) gradeDisplay = `${exam.originalGrade}/${exam.originalMaxScore}`;
-                    else gradeDisplay = `${exam.gradeOutOf20}/20`;
-                    
-                    html += `
-                        <div class="exam-card" onclick="viewExamDetails('${docSnap.id}')">
-                            <h3>📚 ${exam.examTitle || 'Exam'}</h3>
-                            <p><strong>Grade:</strong> ${gradeDisplay}</p>
-                            <p><strong>Score:</strong> ${exam.score}%</p>
-                            <p style="color: #2a5298; font-size: 14px;">Click for details →</p>
+                recentList.innerHTML = '';
+
+                const resultsArray = [];
+                snapshot.forEach(doc => resultsArray.push({ id: doc.id, ...doc.data() }));
+                resultsArray.sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt));
+
+                resultsArray.forEach(data => {
+                    let gradeDisplay = data.originalGrade && data.originalMaxScore ? `${data.originalGrade}/${data.originalMaxScore}` : `${data.gradeOutOf20}/20`;
+                    recentList.innerHTML += `
+                        <div class="recent-exam-item" onclick="viewExamDetails('${data.id}')">
+                            <div>
+                                <h4>${data.examTitle || 'Exam'}</h4>
+                                <p>Score: ${data.score}% | Click for details</p>
+                            </div>
+                            <div class="grade-badge">${gradeDisplay}</div>
                         </div>
                     `;
+
+                    let subject = data.examTitle || 'General';
+                    subject = subject.split(' ')[0].replace(/[^a-zA-Z]/g, ''); 
+                    if (subject.length > 0) {
+                        subject = subject.charAt(0).toUpperCase() + subject.slice(1).toLowerCase();
+                    } else {
+                        subject = 'General';
+                    }
+
+                    if (!subjectData[subject]) {
+                        subjectData[subject] = { total: 0, count: 0 };
+                    }
+                    subjectData[subject].total += data.score;
+                    subjectData[subject].count += 1;
+                    
+                    totalScore += data.score;
+                    count++;
+                    
+                    if (data.score > highestScore) {
+                        highestScore = data.score;
+                    }
+                });
+
+                const labels = [];
+                const scores = [];
+
+                for (const [subject, stats] of Object.entries(subjectData)) {
+                    const avg = stats.total / stats.count;
+                    labels.push(subject);
+                    scores.push(avg.toFixed(1));
+                    
+                    if (avg > (subjectData[bestSubject]?.total / subjectData[bestSubject]?.count || 0)) {
+                        bestSubject = subject;
+                    }
                 }
-                resultsContent.innerHTML = html;
+
+                document.getElementById('overallAvg').textContent = `${(totalScore / count).toFixed(1)}%`;
+                document.getElementById('highestScore').textContent = `${highestScore}%`;
+                document.getElementById('totalExams').textContent = count;
+                document.getElementById('bestSubject').textContent = bestSubject;
+
+                const ctx = document.getElementById('performanceChart').getContext('2d');
+                if (myChart) myChart.destroy();
+
+                myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Average Score (%)',
+                            data: scores,
+                            backgroundColor: 'rgba(79, 70, 229, 0.8)',
+                            borderColor: 'rgba(79, 70, 229, 1)',
+                            borderWidth: 1,
+                            borderRadius: 8,
+                            barPercentage: 0.6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: { beginAtZero: true, max: 100, grid: { color: '#f1f5f9' } },
+                            x: { grid: { display: false } }
+                        },
+                        plugins: { legend: { display: false } }
+                    }
+                });
+
             } catch (error) {
-                console.error('Error loading results:', error);
-                resultsContent.innerHTML = '<p>❌ Error loading results.</p>';
+                console.error("Error drawing dashboard:", error);
             }
-        };
+        }
         
         window.viewExamDetails = async function(examId) {
             const resultsContent = document.getElementById('resultsContent');
+            document.getElementById('resultsModal').style.display = 'block';
+            resultsContent.innerHTML = '<div class="loading-spinner" style="border-color: #e2e8f0; border-top-color: var(--accent);"></div> Loading details...';
+            
             try {
                 const examDoc = await getDoc(doc(db, 'results', examId));
                 if (!examDoc.exists()) { resultsContent.innerHTML = '<p>❌ Exam not found</p>'; return; }
@@ -859,21 +977,20 @@
                 if (exam.originalGrade && exam.originalMaxScore) gradeDisplay = `${exam.originalGrade}/${exam.originalMaxScore}`;
                 else gradeDisplay = `${exam.gradeOutOf20}/20`;
                 
-                let html = '<button class="back-btn" onclick="showResults()">← Back</button>';
-                html += `<h2>${exam.examTitle || 'Exam Details'}</h2>`;
-                html += `<p><strong>Grade:</strong> ${gradeDisplay}</p>`;
-                html += `<p><strong>Score:</strong> ${exam.score}%</p>`;
-                html += `<hr><h3>📝 Questions & Answers</h3>`;
+                let html = `<h2 style="color: var(--primary); font-weight: 800;">${exam.examTitle || 'Exam Details'}</h2>`;
+                html += `<p style="margin: 10px 0; font-size: 16px;"><strong>Grade:</strong> ${gradeDisplay}</p>`;
+                html += `<p style="margin: 10px 0; font-size: 16px;"><strong>Score:</strong> ${exam.score}%</p>`;
+                html += `<hr style="border: 0; border-top: 1px solid var(--border-color); margin: 20px 0;"><h3 style="color: var(--primary); font-weight: 800;">📝 Questions & Answers</h3>`;
                 
                 if (exam.questions && exam.questions.length > 0) {
                     exam.questions.forEach((q, index) => {
                         const isCorrect = q.isCorrect;
                         html += `
                             <div class="question-card ${isCorrect ? 'correct' : 'incorrect'}">
-                                <p><strong>Q${index + 1}: ${q.question}</strong></p>
-                                <p>📝 Your answer: ${q.studentAnswer}</p>
-                                <p>✅ Correct answer: ${q.correctAnswer}</p>
-                                <p>${isCorrect ? '✓ Correct!' : '✗ Incorrect'}</p>
+                                <p style="font-weight: 700; margin-bottom: 10px;">Q${index + 1}: ${q.question}</p>
+                                <p style="margin-bottom: 5px;">📝 Your answer: ${q.studentAnswer}</p>
+                                <p style="margin-bottom: 5px;">✅ Correct answer: ${q.correctAnswer}</p>
+                                <p style="font-weight: 700; color: ${isCorrect ? 'var(--success)' : 'var(--danger)'};">${isCorrect ? '✓ Correct!' : '✗ Incorrect'}</p>
                             </div>
                         `;
                     });
@@ -958,8 +1075,8 @@
 
         if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
             const hint = document.createElement('p');
-            hint.textContent = "To install on iPhone: Tap the Share button ➡ 'Add to Home Screen'.";
-            hint.style.cssText = "font-size: 12px; color: #6b7280; text-align: center; margin-top: 10px;";
+            hint.textContent = "To install on iPhone: Tap Share ➡ 'Add to Home Screen'.";
+            hint.style.cssText = "font-size: 12px; color: #64748b; text-align: center; margin-top: 10px; font-weight: 600;";
             if(installBtn) installBtn.parentNode.appendChild(hint);
         }
     </script>
@@ -968,19 +1085,20 @@
         { "imports": { "three": "https://unpkg.com/three@0.128.0/build/three.module.js" } }
     </script>
 
+    <!-- 3D Background -->
     <script type="module">
         import * as THREE from 'three';
 
         const container = document.getElementById('canvas-container');
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x0a0a2a);
-        scene.fog = new THREE.FogExp2(0x0a0a2a, 0.002);
+        scene.background = new THREE.Color(0x0f172a); // Matched to new background
+        scene.fog = new THREE.FogExp2(0x0f172a, 0.002);
 
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         camera.position.set(0, 2, 8);
         camera.lookAt(0, 0, 0);
 
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(window.devicePixelRatio);
         container.appendChild(renderer.domElement);
@@ -992,13 +1110,9 @@
         directionalLight.position.set(5, 10, 7);
         scene.add(directionalLight);
         
-        const backLight = new THREE.PointLight(0x2a5298, 0.5);
+        const backLight = new THREE.PointLight(0x4f46e5, 0.5); // Purple accent light
         backLight.position.set(0, 2, -5);
         scene.add(backLight);
-        
-        const fillLight = new THREE.PointLight(0x1e3c72, 0.3);
-        fillLight.position.set(3, 1, 2);
-        scene.add(fillLight);
 
         const particleCount = 2000;
         const particlesGeometry = new THREE.BufferGeometry();
@@ -1011,64 +1125,21 @@
         }
         
         particlesGeometry.setAttribute('position', new THREE.BufferAttribute(particlesPositions, 3));
-        const particlesMaterial = new THREE.PointsMaterial({ color: 0x4a7db4, size: 0.12, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending });
+        const particlesMaterial = new THREE.PointsMaterial({ color: 0x818cf8, size: 0.15, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending });
         const particles = new THREE.Points(particlesGeometry, particlesMaterial);
         scene.add(particles);
 
         const knotGeometry = new THREE.TorusKnotGeometry(1.2, 0.25, 200, 32, 3, 4);
-        const knotMaterial = new THREE.MeshPhongMaterial({ color: 0x2a5298, emissive: 0x0a1a3a, shininess: 100, transparent: true, opacity: 0.8 });
+        const knotMaterial = new THREE.MeshPhongMaterial({ color: 0x4f46e5, emissive: 0x1e1b4b, shininess: 100, transparent: true, opacity: 0.6 });
         const torusKnot = new THREE.Mesh(knotGeometry, knotMaterial);
         torusKnot.position.set(0, -1, -3);
         scene.add(torusKnot);
 
         const icoGeometry = new THREE.IcosahedronGeometry(0.8, 0);
-        const icoMaterial = new THREE.MeshStandardMaterial({ color: 0x3a6bb0, metalness: 0.7, roughness: 0.3, emissive: 0x1e3c72, emissiveIntensity: 0.2 });
+        const icoMaterial = new THREE.MeshStandardMaterial({ color: 0x6366f1, metalness: 0.7, roughness: 0.3, emissive: 0x312e81, emissiveIntensity: 0.2 });
         const icosahedron = new THREE.Mesh(icoGeometry, icoMaterial);
         icosahedron.position.set(2.5, 0.5, -4);
         scene.add(icosahedron);
-
-        const sphereWireGeometry = new THREE.SphereGeometry(1, 32, 32);
-        const wireframeMaterial = new THREE.MeshBasicMaterial({ color: 0x4a7db4, wireframe: true, transparent: true, opacity: 0.3 });
-        const wireframeSphere = new THREE.Mesh(sphereWireGeometry, wireframeMaterial);
-        wireframeSphere.position.set(-2, 1, -5);
-        scene.add(wireframeSphere);
-
-        const cubes = [];
-        const cubeCount = 16;
-        for (let i = 0; i < cubeCount; i++) {
-            const cubeGeo = new THREE.BoxGeometry(0.2, 0.2, 0.2);
-            const cubeMat = new THREE.MeshStandardMaterial({ color: 0x5a8dc4, emissive: 0x1e3c72, emissiveIntensity: 0.5 });
-            const cube = new THREE.Mesh(cubeGeo, cubeMat);
-            cubes.push(cube);
-            scene.add(cube);
-        }
-
-        const ringGeometry = new THREE.TorusGeometry(1.5, 0.05, 64, 200);
-        const ringMaterial = new THREE.MeshPhongMaterial({ color: 0x4a7db4, emissive: 0x1e3c72, transparent: true, opacity: 0.4 });
-        const ring1 = new THREE.Mesh(ringGeometry, ringMaterial);
-        ring1.rotation.x = Math.PI / 2;
-        ring1.position.y = -0.5;
-        ring1.position.z = -2;
-        scene.add(ring1);
-        
-        const ring2 = new THREE.Mesh(ringGeometry, ringMaterial);
-        ring2.rotation.z = Math.PI / 3;
-        ring2.rotation.x = Math.PI / 3;
-        ring2.position.y = 1;
-        ring2.position.z = -3;
-        scene.add(ring2);
-
-        const orbGeometry = new THREE.SphereGeometry(0.12, 16, 16);
-        const orbMaterial = new THREE.MeshStandardMaterial({ color: 0x7aade0, emissive: 0x2a5298, emissiveIntensity: 0.6 });
-        const orbs = [];
-        for (let i = 0; i < 40; i++) {
-            const orb = new THREE.Mesh(orbGeometry, orbMaterial);
-            orb.position.x = (Math.random() - 0.5) * 12;
-            orb.position.y = (Math.random() - 0.5) * 8;
-            orb.position.z = (Math.random() - 0.5) * 15 - 5;
-            scene.add(orb);
-            orbs.push(orb);
-        }
 
         let mouseX = 0, mouseY = 0, targetRotationX = 0, targetRotationY = 0;
         
@@ -1096,34 +1167,10 @@
             icosahedron.rotation.x = time * 0.6;
             icosahedron.rotation.y = time * 0.7;
             
-            wireframeSphere.rotation.x = time * 0.4;
-            wireframeSphere.rotation.y = time * 0.5;
-            
-            ring1.rotation.z = time * 0.3;
-            ring2.rotation.x = time * 0.4;
-            ring2.rotation.y = time * 0.5;
-            
-            cubes.forEach((cube, index) => {
-                cube.rotation.x = time * 1.5;
-                cube.rotation.y = time * 1.2;
-                const angle = (index / cubes.length) * Math.PI * 2 + time;
-                const radius = 2.8;
-                cube.position.x = Math.cos(angle) * radius;
-                cube.position.z = Math.sin(angle) * radius - 2;
-                cube.position.y = Math.sin(angle * 2) * 1.2;
-            });
-            
             particles.rotation.y = time * 0.05;
             particles.rotation.x = Math.sin(time * 0.2) * 0.1;
             
-            orbs.forEach((orb, idx) => {
-                orb.position.y += Math.sin(time * 2 + idx) * 0.002;
-                const scale = 0.8 + Math.sin(time * 3 + idx) * 0.3;
-                orb.scale.set(scale, scale, scale);
-            });
-            
             backLight.intensity = 0.5 + Math.sin(time * 2) * 0.2;
-            fillLight.intensity = 0.3 + Math.sin(time * 1.5) * 0.1;
             
             renderer.render(scene, camera);
         }
