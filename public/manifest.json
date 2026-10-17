@@ -1,0 +1,17 @@
+{
+  "name": "ODA Exam Portal",
+  "short_name": "ODA Portal",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1e3c72",
+  "theme_color": "#1e3c72",
+  "description": "Official ODA Exam Portal for students and teachers.",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
