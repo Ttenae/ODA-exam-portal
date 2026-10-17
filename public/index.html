@@ -21,16 +21,18 @@
     <meta property="og:url" content="https://examportaloda.netlify.app/">
     <meta property="og:title" content="ODA Exam Portal | Secure Student & Teacher Login">
     <meta property="og:description" content="Official ODA Exam Portal for students and teachers. Securely log in to view exam results and manage grades.">
-    <meta property="og:image" content="https://examportaloda.netlify.app/your-preview-image.jpg"> <!-- Replace with an actual image URL -->
+    <meta property="og:image" content="https://examportaloda.netlify.app/your-preview-image.jpg"> 
 
     <!-- Twitter Card (For when you share on X) -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="https://examportaloda.netlify.app/">
     <meta name="twitter:title" content="ODA Exam Portal | Secure Student & Teacher Login">
     <meta name="twitter:description" content="Official ODA Exam Portal for students and teachers. Securely log in to view exam results and manage grades.">
-    <meta name="twitter:image" content="https://examportaloda.netlify.app/your-preview-image.jpg"> <!-- Replace with an actual image URL -->
+    <meta name="twitter:image" content="https://examportaloda.netlify.app/your-preview-image.jpg"> 
+    
     <title>ODA Exam Portal | Secure Student & Teacher Login</title>
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/svg+xml" href="/oda.svg">
+    
     <script type="application/ld+json">
     {
     "@context": "https://schema.org",
@@ -73,14 +75,8 @@
         }
 
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .intro-logo {
@@ -90,14 +86,8 @@
         }
 
         @keyframes bounceLogo {
-            from {
-                transform: scale(0.8);
-                opacity: 0.5;
-            }
-            to {
-                transform: scale(1.2);
-                opacity: 1;
-            }
+            from { transform: scale(0.8); opacity: 0.5; }
+            to { transform: scale(1.2); opacity: 1; }
         }
 
         .intro-title {
@@ -112,9 +102,7 @@
             animation: fadeIn 0.8s ease forwards 0.3s;
         }
 
-        @keyframes fadeIn {
-            to { opacity: 1; }
-        }
+        @keyframes fadeIn { to { opacity: 1; } }
 
         .intro-subtitle {
             font-size: 16px;
@@ -171,7 +159,6 @@
             animation: fadeIn 0.8s ease forwards 1.5s;
         }
 
-        /* Floating particles for intro */
         .particle {
             position: absolute;
             width: 4px;
@@ -182,20 +169,10 @@
         }
 
         @keyframes particleFloat {
-            0% {
-                transform: translateY(100vh) rotate(0deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-100vh) rotate(360deg);
-                opacity: 0;
-            }
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
         }
 
         /* Main Content Styles */
@@ -235,14 +212,8 @@
         }
 
         @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .header h1 {
@@ -279,22 +250,9 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.3);
         }
 
-        .card-icon {
-            font-size: 80px;
-            margin-bottom: 20px;
-        }
-
-        .card h2 {
-            color: #1e3c72;
-            margin-bottom: 15px;
-            font-size: 28px;
-        }
-
-        .card p {
-            color: #6b7280;
-            margin-bottom: 25px;
-            line-height: 1.5;
-        }
+        .card-icon { font-size: 80px; margin-bottom: 20px; }
+        .card h2 { color: #1e3c72; margin-bottom: 15px; font-size: 28px; }
+        .card p { color: #6b7280; margin-bottom: 25px; line-height: 1.5; }
 
         .card-btn {
             background: linear-gradient(135deg, #1e3c72, #2a5298);
@@ -313,23 +271,10 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
-        /* Student Card Specific */
-        .student-card {
-            border-bottom: 5px solid #2a5298;
-        }
-
-        .student-card .card-btn {
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
-        }
-
-        /* Teacher Card Specific */
-        .teacher-card {
-            border-bottom: 5px solid #dc2626;
-        }
-
-        .teacher-card .card-btn {
-            background: linear-gradient(135deg, #dc2626, #b91c1c);
-        }
+        .student-card { border-bottom: 5px solid #2a5298; }
+        .student-card .card-btn { background: linear-gradient(135deg, #1e3c72, #2a5298); }
+        .teacher-card { border-bottom: 5px solid #dc2626; }
+        .teacher-card .card-btn { background: linear-gradient(135deg, #dc2626, #b91c1c); }
 
         .footer {
             text-align: center;
@@ -350,7 +295,6 @@
     </style>
 </head>
 <body>
-    <!-- Intro Animation Overlay -->
     <div class="intro-overlay" id="introOverlay">
         <div class="intro-content">
             <div class="intro-logo">📚</div>
@@ -364,7 +308,6 @@
         </div>
     </div>
 
-    <!-- Main Content Wrapper -->
     <div class="main-wrapper" id="mainWrapper">
         <div class="container">
             <div class="header">
@@ -372,15 +315,14 @@
                 <p>Choose your role to continue</p>
             </div>
 
-            <!-- 📥 PWA INSTALL BUTTON ADDED HERE -->
+            <!-- 📥 PWA INSTALL BUTTON (Forced Visible for Testing) -->
             <div style="text-align: center; margin-bottom: 30px;">
-                <button id="installAppBtn" style="display: none; padding: 12px 30px; background: #10b981; color: white; border: none; border-radius: 30px; font-size: 16px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3); transition: transform 0.3s ease;">
+                <button id="installAppBtn" style="display: inline-block; padding: 12px 30px; background: #10b981; color: white; border: none; border-radius: 30px; font-size: 16px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3); transition: transform 0.3s ease;">
                     📥 Download & Install App
                 </button>
             </div>
 
             <div class="cards-container">
-                <!-- Student Card -->
                 <div class="card student-card" onclick="goToStudent()">
                     <div class="card-icon">🎓</div>
                     <h2>Student</h2>
@@ -388,7 +330,6 @@
                     <button class="card-btn">Enter as Student →</button>
                 </div>
 
-                <!-- Teacher Card -->
                 <div class="card teacher-card" onclick="goToTeacher()">
                     <div class="card-icon">👨‍🏫</div>
                     <h2>Teacher</h2>
@@ -404,7 +345,6 @@
     </div>
 
     <script>
-        // Quotes array for rotation
         const quotes = [
             '"Education is the most powerful weapon which you can use to change the world." - Nelson Mandela',
             '"The beautiful thing about learning is that no one can take it away from you." - B.B. King',
@@ -419,7 +359,6 @@
         const introOverlay = document.getElementById('introOverlay');
         const mainWrapper = document.getElementById('mainWrapper');
 
-        // Progress messages
         const progressMessages = [
             'Initializing system...',
             'Loading student records...',
@@ -437,7 +376,6 @@
             }
         }, 500);
 
-        // Rotate quotes every 2.5 seconds
         const quoteInterval = setInterval(() => {
             quoteIndex = (quoteIndex + 1) % quotes.length;
             if (quoteElement) {
@@ -449,25 +387,18 @@
             }
         }, 2500);
 
-        // After 4 seconds, fade out intro and show main content
         setTimeout(() => {
             clearInterval(msgInterval);
             clearInterval(quoteInterval);
             progressText.textContent = 'Welcome!';
-            
-            // Fade out intro
             introOverlay.classList.add('fade-out');
-            
-            // Show main content
             mainWrapper.classList.add('visible');
             
-            // Remove intro overlay after animation
             setTimeout(() => {
                 introOverlay.style.display = 'none';
             }, 1500);
         }, 4000);
 
-        // Navigation functions
         function goToStudent() {
             const card = document.querySelector('.student-card');
             card.style.transform = 'scale(0.95)';
@@ -484,7 +415,6 @@
             }, 200);
         }
 
-        // Create floating particles for intro
         function createParticles() {
             const introContent = document.querySelector('.intro-content');
             if (!introContent) return;
@@ -513,23 +443,22 @@
             });
         }
 
-        // ==========================================
-        // 📥 PWA INSTALL LOGIC ADDED HERE
-        // ==========================================
+        // 📥 PWA INSTALL LOGIC
         let deferredPrompt;
         const installBtn = document.getElementById('installAppBtn');
 
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            if (installBtn) {
-                installBtn.style.display = 'inline-block';
-            }
+            // Button is already visible for testing
         });
 
         if (installBtn) {
             installBtn.addEventListener('click', async () => {
-                if (!deferredPrompt) return;
+                if (!deferredPrompt) {
+                    alert("Installation not ready yet. Please wait 5 seconds and try again, or use the browser menu (⋮) to 'Add to Home screen'.");
+                    return;
+                }
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
                 deferredPrompt = null;
@@ -541,7 +470,6 @@
 
         window.addEventListener('appinstalled', () => {
             if (installBtn) installBtn.style.display = 'none';
-            console.log('PWA was installed');
         });
     </script>
 </body>

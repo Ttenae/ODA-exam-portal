@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <meta name="robots" content="noindex, nofollow">
     <title>3D Student Portal | Sign Up & Login</title>
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/svg+xml" href="/oda.svg">
     <style>
         * {
             margin: 0;
@@ -26,7 +26,6 @@
             position: relative;
         }
 
-        /* Fixed 3D Background that stays behind content */
         #canvas-container {
             position: fixed;
             top: 0;
@@ -43,7 +42,6 @@
             height: 100%;
         }
 
-        /* Scrollable content */
         .content-wrapper {
             position: relative;
             z-index: 10;
@@ -223,23 +221,9 @@
             font-weight: 500;
         }
 
-        .error-message {
-            background: #fef2f2;
-            color: #dc2626;
-            border-left: 4px solid #dc2626;
-        }
-
-        .success-message {
-            background: #f0fdf4;
-            color: #16a34a;
-            border-left: 4px solid #16a34a;
-        }
-
-        .info-message {
-            background: #eff6ff;
-            color: #2563eb;
-            border-left: 4px solid #2563eb;
-        }
+        .error-message { background: #fef2f2; color: #dc2626; border-left: 4px solid #dc2626; }
+        .success-message { background: #f0fdf4; color: #16a34a; border-left: 4px solid #16a34a; }
+        .info-message { background: #eff6ff; color: #2563eb; border-left: 4px solid #2563eb; }
 
         .loading-spinner {
             display: inline-block;
@@ -253,9 +237,7 @@
             vertical-align: middle;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
         .dashboard-container {
             width: 100%;
@@ -304,25 +286,10 @@
             margin-top: 10px;
         }
 
-        .exam-btn {
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
-            color: white;
-        }
-
-        .exam-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px -5px rgba(42, 82, 152, 0.4);
-        }
-
-        .logout-btn {
-            background: #dc2626;
-            color: white;
-        }
-
-        .logout-btn:hover {
-            background: #b91c1c;
-            transform: translateY(-2px);
-        }
+        .exam-btn { background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; }
+        .exam-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 25px -5px rgba(42, 82, 152, 0.4); }
+        .logout-btn { background: #dc2626; color: white; }
+        .logout-btn:hover { background: #b91c1c; transform: translateY(-2px); }
 
         .modal {
             display: none;
@@ -360,26 +327,11 @@
             transition: transform 0.2s;
         }
 
-        .exam-card:hover {
-            transform: translateX(5px);
-            background: #e5e7eb;
-        }
+        .exam-card:hover { transform: translateX(5px); background: #e5e7eb; }
 
-        .question-card {
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-        }
-
-        .question-card.correct {
-            background: #e8f5e9;
-            border-left: 4px solid #4caf50;
-        }
-
-        .question-card.incorrect {
-            background: #ffebee;
-            border-left: 4px solid #f44336;
-        }
+        .question-card { padding: 15px; border-radius: 10px; margin-bottom: 15px; }
+        .question-card.correct { background: #e8f5e9; border-left: 4px solid #4caf50; }
+        .question-card.incorrect { background: #ffebee; border-left: 4px solid #f44336; }
 
         .back-btn {
             background: #6b7280;
@@ -391,9 +343,7 @@
             margin-bottom: 20px;
         }
 
-        .back-btn:hover {
-            background: #4b5563;
-        }
+        .back-btn:hover { background: #4b5563; }
 
         .close-modal {
             background: #2a5298;
@@ -405,9 +355,7 @@
             margin-top: 20px;
         }
 
-        .close-modal:hover {
-            background: #1e3c72;
-        }
+        .close-modal:hover { background: #1e3c72; }
 
         .footer {
             text-align: center;
@@ -418,11 +366,7 @@
             color: #6b7280;
         }
 
-        .no-results-icon {
-            font-size: 64px;
-            text-align: center;
-            margin: 20px 0;
-        }
+        .no-results-icon { font-size: 64px; text-align: center; margin: 20px 0; }
 
         @media (max-width: 600px) {
             .auth-card, .dashboard-card { padding: 30px 25px; }
@@ -431,33 +375,16 @@
             .content-wrapper { padding: 20px; }
         }
 
-        /* Scrollbar styling */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #2a5298;
-            border-radius: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #1e3c72;
-        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #2a5298; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #1e3c72; }
     </style>
 </head>
 <body>
-    <!-- Fixed 3D Background Container -->
     <div id="canvas-container"></div>
 
-    <!-- Scrollable Content -->
     <div class="content-wrapper">
-        <!-- Auth Container (Sign Up/Login) -->
         <div class="auth-container" id="authContainer">
             <div class="auth-card">
                 <div class="logo">
@@ -477,7 +404,6 @@
                     <button class="tab-btn active" id="signupTabBtn" onclick="switchTab('signup')">Sign Up</button>
                 </div>
                 
-                <!-- Login Form -->
                 <form id="loginForm" style="display: none;">
                     <div id="usernameLoginFields">
                         <div class="form-group">
@@ -502,7 +428,6 @@
                     <button type="submit" class="auth-btn" id="loginBtn">Sign In →</button>
                 </form>
                 
-                <!-- Sign Up Form -->
                 <form id="signupForm" style="display: block;">
                     <div id="signupUsernameFields">
                         <div class="form-group">
@@ -535,14 +460,13 @@
                     <button type="submit" class="auth-btn" id="signupBtn">Create Account →</button>
                 </form>
 
-                <!-- 📥 PWA INSTALL BUTTON ADDED HERE -->
-                <button id="installAppBtn" style="display: none; width: 100%; padding: 14px; background: #10b981; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 15px; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);">
+                <!-- 📥 PWA INSTALL BUTTON (Forced Visible for Testing) -->
+                <button id="installAppBtn" style="display: block; width: 100%; padding: 14px; background: #10b981; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 15px; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);">
                     📥 Download & Install App
                 </button>
             </div>
         </div>
 
-        <!-- Dashboard Container -->
         <div class="dashboard-container" id="dashboardContainer" style="display: none;">
             <div class="dashboard-card">
                 <h2>Welcome, <span id="studentName">Student</span>! 👋</h2>
@@ -560,7 +484,6 @@
         </div>
     </div>
 
-    <!-- Results Modal -->
     <div id="resultsModal" class="modal">
         <div class="modal-content">
             <div id="resultsContent"><div class="loading-spinner"></div> Loading...</div>
@@ -584,7 +507,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         
-        // DOM Elements
         const authContainer = document.getElementById('authContainer');
         const dashboardContainer = document.getElementById('dashboardContainer');
         const loginForm = document.getElementById('loginForm');
@@ -600,9 +522,7 @@
             messageBox.textContent = message;
             messageBox.className = `message ${type}-message`;
             messageBox.style.display = 'block';
-            setTimeout(() => {
-                messageBox.style.display = 'none';
-            }, 5000);
+            setTimeout(() => { messageBox.style.display = 'none'; }, 5000);
         }
         
         function setLoading(isLoading, formType) {
@@ -671,25 +591,16 @@
             if (!studentNamesSnapshot.empty) {
                 const docData = studentNamesSnapshot.docs[0].data();
                 return { 
-                    studentDoc: {
-                        id: studentNamesSnapshot.docs[0].id,
-                        data: () => docData,
-                        exists: true
-                    }, 
+                    studentDoc: { id: studentNamesSnapshot.docs[0].id, data: () => docData, exists: true }, 
                     method: 'studentNames',
                     isNameCollection: true
                 };
             }
-            
             return null;
         }
         
         async function findStudentByName(firstName, lastName) {
-            const studentsQuery = query(
-                collection(db, 'students'), 
-                where('firstName', '==', firstName),
-                where('lastName', '==', lastName)
-            );
+            const studentsQuery = query(collection(db, 'students'), where('firstName', '==', firstName), where('lastName', '==', lastName));
             const studentsSnapshot = await getDocs(studentsQuery);
             if (!studentsSnapshot.empty) {
                 return { studentDoc: studentsSnapshot.docs[0], method: 'students' };
@@ -700,16 +611,11 @@
             if (studentNameDoc.exists()) {
                 const docData = studentNameDoc.data();
                 return { 
-                    studentDoc: {
-                        id: studentNameDoc.id,
-                        data: () => docData,
-                        exists: true
-                    }, 
+                    studentDoc: { id: studentNameDoc.id, data: () => docData, exists: true }, 
                     method: 'studentNames',
                     isNameCollection: true
                 };
             }
-            
             return null;
         }
         
@@ -718,12 +624,10 @@
                 showMessage('New passwords do not match!', 'error');
                 return false;
             }
-            
             if (newPassword.length < 4) {
                 showMessage('New password must be at least 4 characters', 'error');
                 return false;
             }
-            
             if (!tempPassword) {
                 showMessage('Please enter your temporary password from your teacher', 'error');
                 return false;
@@ -731,31 +635,19 @@
             
             try {
                 setLoading(true, 'signup');
-                
                 let studentResult = null;
                 
                 if (loginType === 'username') {
-                    if (!identifier1) {
-                        showMessage('Please enter your username', 'error');
-                        setLoading(false, 'signup');
-                        return false;
-                    }
+                    if (!identifier1) { showMessage('Please enter your username', 'error'); setLoading(false, 'signup'); return false; }
                     studentResult = await findStudentByUsername(identifier1);
                 } else {
-                    if (!identifier1 || !identifier2) {
-                        showMessage('Please enter both first name and last name', 'error');
-                        setLoading(false, 'signup');
-                        return false;
-                    }
+                    if (!identifier1 || !identifier2) { showMessage('Please enter both first name and last name', 'error'); setLoading(false, 'signup'); return false; }
                     studentResult = await findStudentByName(identifier1, identifier2);
                 }
                 
                 if (!studentResult) {
-                    if (loginType === 'username') {
-                        showMessage('❌ Username not found in school records.', 'error');
-                    } else {
-                        showMessage('❌ Name not found in school records. Please check with your teacher.', 'error');
-                    }
+                    if (loginType === 'username') showMessage('❌ Username not found in school records.', 'error');
+                    else showMessage('❌ Name not found in school records. Please check with your teacher.', 'error');
                     setLoading(false, 'signup');
                     return false;
                 }
@@ -772,7 +664,6 @@
                 }
                 
                 const storedPassword = studentData.defaultPassword || studentData.tempPassword;
-                
                 if (!storedPassword || storedPassword !== tempPassword) {
                     showMessage('❌ Incorrect temporary password!', 'error');
                     setLoading(false, 'signup');
@@ -780,17 +671,9 @@
                 }
                 
                 if (isFromNameCollection) {
-                    await updateDoc(doc(db, 'studentNames', studentId), {
-                        password: newPassword,
-                        hasAccount: true,
-                        accountCreatedAt: new Date().toISOString()
-                    });
+                    await updateDoc(doc(db, 'studentNames', studentId), { password: newPassword, hasAccount: true, accountCreatedAt: new Date().toISOString() });
                 } else {
-                    await updateDoc(doc(db, 'students', studentId), {
-                        password: newPassword,
-                        hasAccount: true,
-                        accountCreatedAt: new Date().toISOString()
-                    });
+                    await updateDoc(doc(db, 'students', studentId), { password: newPassword, hasAccount: true, accountCreatedAt: new Date().toISOString() });
                 }
                 
                 showMessage(`✅ Account created! Please login.`, 'success');
@@ -827,38 +710,23 @@
         }
         
         async function handleLogin(identifier1, identifier2, password, loginType) {
-            if (!password) {
-                showMessage('Please enter your password', 'error');
-                return false;
-            }
+            if (!password) { showMessage('Please enter your password', 'error'); return false; }
             
             try {
                 setLoading(true, 'login');
-                
                 let studentResult = null;
                 
                 if (loginType === 'username') {
-                    if (!identifier1) {
-                        showMessage('Please enter your username', 'error');
-                        setLoading(false, 'login');
-                        return false;
-                    }
+                    if (!identifier1) { showMessage('Please enter your username', 'error'); setLoading(false, 'login'); return false; }
                     studentResult = await findStudentByUsername(identifier1);
                 } else {
-                    if (!identifier1 || !identifier2) {
-                        showMessage('Please enter both first name and last name', 'error');
-                        setLoading(false, 'login');
-                        return false;
-                    }
+                    if (!identifier1 || !identifier2) { showMessage('Please enter both first name and last name', 'error'); setLoading(false, 'login'); return false; }
                     studentResult = await findStudentByName(identifier1, identifier2);
                 }
                 
                 if (!studentResult) {
-                    if (loginType === 'username') {
-                        showMessage('❌ Username not found.', 'error');
-                    } else {
-                        showMessage('❌ Name not found. Please check your first and last name.', 'error');
-                    }
+                    if (loginType === 'username') showMessage('❌ Username not found.', 'error');
+                    else showMessage('❌ Name not found. Please check your first and last name.', 'error');
                     setLoading(false, 'login');
                     return false;
                 }
@@ -938,24 +806,13 @@
             resultsContent.innerHTML = '<div class="loading-spinner"></div> Loading your results...';
             
             try {
-                if (!currentUser) {
-                    resultsContent.innerHTML = '<p>❌ Please login again.</p>';
-                    return;
-                }
+                if (!currentUser) { resultsContent.innerHTML = '<p>❌ Please login again.</p>'; return; }
                 
                 let resultsQuery;
-                
                 if (currentUser.username) {
-                    resultsQuery = query(
-                        collection(db, 'results'),
-                        where('studentUsername', '==', currentUser.username)
-                    );
+                    resultsQuery = query(collection(db, 'results'), where('studentUsername', '==', currentUser.username));
                 } else if (currentUser.firstName && currentUser.lastName) {
-                    resultsQuery = query(
-                        collection(db, 'results'),
-                        where('studentFirstName', '==', currentUser.firstName),
-                        where('studentLastName', '==', currentUser.lastName)
-                    );
+                    resultsQuery = query(collection(db, 'results'), where('studentFirstName', '==', currentUser.firstName), where('studentLastName', '==', currentUser.lastName));
                 } else {
                     resultsContent.innerHTML = '<p>❌ Unable to fetch results. Missing student information.</p>';
                     return;
@@ -964,11 +821,7 @@
                 const resultsSnapshot = await getDocs(resultsQuery);
                 
                 if (resultsSnapshot.empty) {
-                    resultsContent.innerHTML = `
-                        <div class="no-results-icon">📭</div>
-                        <h3>No Results Available Yet</h3>
-                        <p>Your exam results haven't been uploaded yet.</p>
-                    `;
+                    resultsContent.innerHTML = `<div class="no-results-icon">📭</div><h3>No Results Available Yet</h3><p>Your exam results haven't been uploaded yet.</p>`;
                     return;
                 }
                 
@@ -976,11 +829,8 @@
                 for (const docSnap of resultsSnapshot.docs) {
                     const exam = docSnap.data();
                     let gradeDisplay = '';
-                    if (exam.originalGrade && exam.originalMaxScore) {
-                        gradeDisplay = `${exam.originalGrade}/${exam.originalMaxScore}`;
-                    } else {
-                        gradeDisplay = `${exam.gradeOutOf20}/20`;
-                    }
+                    if (exam.originalGrade && exam.originalMaxScore) gradeDisplay = `${exam.originalGrade}/${exam.originalMaxScore}`;
+                    else gradeDisplay = `${exam.gradeOutOf20}/20`;
                     
                     html += `
                         <div class="exam-card" onclick="viewExamDetails('${docSnap.id}')">
@@ -992,7 +842,6 @@
                     `;
                 }
                 resultsContent.innerHTML = html;
-                
             } catch (error) {
                 console.error('Error loading results:', error);
                 resultsContent.innerHTML = '<p>❌ Error loading results.</p>';
@@ -1001,22 +850,14 @@
         
         window.viewExamDetails = async function(examId) {
             const resultsContent = document.getElementById('resultsContent');
-            
             try {
                 const examDoc = await getDoc(doc(db, 'results', examId));
-                if (!examDoc.exists()) {
-                    resultsContent.innerHTML = '<p>❌ Exam not found</p>';
-                    return;
-                }
+                if (!examDoc.exists()) { resultsContent.innerHTML = '<p>❌ Exam not found</p>'; return; }
                 
                 const exam = examDoc.data();
-                
                 let gradeDisplay = '';
-                if (exam.originalGrade && exam.originalMaxScore) {
-                    gradeDisplay = `${exam.originalGrade}/${exam.originalMaxScore}`;
-                } else {
-                    gradeDisplay = `${exam.gradeOutOf20}/20`;
-                }
+                if (exam.originalGrade && exam.originalMaxScore) gradeDisplay = `${exam.originalGrade}/${exam.originalMaxScore}`;
+                else gradeDisplay = `${exam.gradeOutOf20}/20`;
                 
                 let html = '<button class="back-btn" onclick="showResults()">← Back</button>';
                 html += `<h2>${exam.examTitle || 'Exam Details'}</h2>`;
@@ -1039,22 +880,17 @@
                 } else {
                     html += '<p>No question details available.</p>';
                 }
-                
                 resultsContent.innerHTML = html;
             } catch (error) {
                 resultsContent.innerHTML = '<p>❌ Error loading details</p>';
             }
         };
         
-        window.closeResults = function() {
-            document.getElementById('resultsModal').style.display = 'none';
-        };
+        window.closeResults = function() { document.getElementById('resultsModal').style.display = 'none'; };
         
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
             let identifier1, identifier2;
-            
             if (currentLoginType === 'username') {
                 identifier1 = document.getElementById('loginUsername').value.trim();
                 identifier2 = null;
@@ -1062,16 +898,13 @@
                 identifier1 = document.getElementById('loginFirstName').value.trim();
                 identifier2 = document.getElementById('loginLastName').value.trim();
             }
-            
             const password = document.getElementById('loginPassword').value.trim();
             await handleLogin(identifier1, identifier2, password, currentLoginType);
         });
         
         signupForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
             let identifier1, identifier2;
-            
             if (currentLoginType === 'username') {
                 identifier1 = document.getElementById('signupUsername').value.trim();
                 identifier2 = null;
@@ -1079,11 +912,9 @@
                 identifier1 = document.getElementById('signupFirstName').value.trim();
                 identifier2 = document.getElementById('signupLastName').value.trim();
             }
-            
             const tempPassword = document.getElementById('signupTempPassword').value.trim();
             const newPassword = document.getElementById('signupNewPassword').value.trim();
             const confirmPassword = document.getElementById('signupConfirmPassword').value.trim();
-            
             await handleSignUp(identifier1, identifier2, tempPassword, newPassword, confirmPassword, currentLoginType);
         });
         
@@ -1096,45 +927,35 @@
         
         window.onclick = function(event) {
             const modal = document.getElementById('resultsModal');
-            if (event.target === modal) {
-                modal.style.display = 'none';
-            }
+            if (event.target === modal) modal.style.display = 'none';
         };
 
-        // ==========================================
-        // 📥 PWA INSTALL LOGIC ADDED HERE
-        // ==========================================
+        // 📥 PWA INSTALL LOGIC
         let deferredPrompt;
         const installBtn = document.getElementById('installAppBtn');
 
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            if (installBtn) {
-                installBtn.style.display = 'block';
-            }
         });
 
         if (installBtn) {
             installBtn.addEventListener('click', async () => {
                 if (!deferredPrompt) {
+                    alert("Installation not ready yet. Please wait 5 seconds and try again, or use the browser menu (⋮) to 'Add to Home screen'.");
                     return;
                 }
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
                 deferredPrompt = null;
-                if (outcome === 'accepted') {
-                    installBtn.style.display = 'none';
-                }
+                if (outcome === 'accepted') installBtn.style.display = 'none';
             });
         }
 
         window.addEventListener('appinstalled', () => {
             if (installBtn) installBtn.style.display = 'none';
-            console.log('PWA was installed');
         });
 
-        // Detect iOS and show hint
         if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
             const hint = document.createElement('p');
             hint.textContent = "To install on iPhone: Tap the Share button ➡ 'Add to Home Screen'.";
@@ -1143,13 +964,8 @@
         }
     </script>
 
-    <!-- Three.js Background -->
     <script type="importmap">
-        {
-            "imports": {
-                "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
-            }
-        }
+        { "imports": { "three": "https://unpkg.com/three@0.128.0/build/three.module.js" } }
     </script>
 
     <script type="module">
