@@ -534,6 +534,11 @@
                     </div>
                     <button type="submit" class="auth-btn" id="signupBtn">Create Account →</button>
                 </form>
+
+                <!-- 📥 PWA INSTALL BUTTON ADDED HERE -->
+                <button id="installAppBtn" style="display: none; width: 100%; padding: 14px; background: #10b981; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 15px; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);">
+                    📥 Download & Install App
+                </button>
             </div>
         </div>
 
@@ -1095,6 +1100,47 @@
                 modal.style.display = 'none';
             }
         };
+
+        // ==========================================
+        // 📥 PWA INSTALL LOGIC ADDED HERE
+        // ==========================================
+        let deferredPrompt;
+        const installBtn = document.getElementById('installAppBtn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            if (installBtn) {
+                installBtn.style.display = 'block';
+            }
+        });
+
+        if (installBtn) {
+            installBtn.addEventListener('click', async () => {
+                if (!deferredPrompt) {
+                    return;
+                }
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                deferredPrompt = null;
+                if (outcome === 'accepted') {
+                    installBtn.style.display = 'none';
+                }
+            });
+        }
+
+        window.addEventListener('appinstalled', () => {
+            if (installBtn) installBtn.style.display = 'none';
+            console.log('PWA was installed');
+        });
+
+        // Detect iOS and show hint
+        if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+            const hint = document.createElement('p');
+            hint.textContent = "To install on iPhone: Tap the Share button ➡ 'Add to Home Screen'.";
+            hint.style.cssText = "font-size: 12px; color: #6b7280; text-align: center; margin-top: 10px;";
+            if(installBtn) installBtn.parentNode.appendChild(hint);
+        }
     </script>
 
     <!-- Three.js Background -->
